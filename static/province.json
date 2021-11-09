@@ -1,0 +1,172 @@
+{
+  "anhui": {
+    "id": 34,
+    "url": "./province.html?id=anhui",
+    "name": "安徽省"
+  },
+  "aomen": {
+    "id": 82,
+    "url": "./province.html?id=aomen",
+    "name": "澳门"
+  },
+  "beijing": {
+    "id": 11,
+    "url": "./province.html?id=beijing",
+    "name": "北京市"
+  },
+  "chongqing": {
+    "id": 50,
+    "url": "./province.html?id=chongqing",
+    "name": "重庆市"
+  },
+  "fujian": {
+    "id": 35,
+    "url": "./province.html?id=fujian",
+    "name": "福建省"
+  },
+  "gansu": {
+    "id": 62,
+    "url": "./province.html?id=gansu",
+    "name": "甘肃省"
+  },
+  "guangdong": {
+    "id": 44,
+    "url": "./province.html?id=guangdong",
+    "name": "广东省"
+  },
+  "guangxi": {
+    "id": 45,
+    "url": "./province.html?id=guangxi",
+    "name": "广西省"
+  },
+  "guizhou": {
+    "id": 52,
+    "url": "./province.html?id=guizhou",
+    "name": "贵州省"
+  },
+  "hainan": {
+    "id": 46,
+    "url": "./province.html?id=hainan",
+    "name": "海南省"
+  },
+  "hebei": {
+    "id": 13,
+    "url": "./province.html?id=hebei",
+    "name": "河北省"
+  },
+  "heilongjiang": {
+    "id": 23,
+    "url": "./province.html?id=heilongjiang",
+    "name": "黑龙江"
+  },
+  "henan": {
+    "id": 41,
+    "url": "./province.html?id=henan",
+    "name": "河南省"
+  },
+  "hubei": {
+    "id": 42,
+    "url": "./province.html?id=hubei",
+    "name": "湖北省"
+  },
+  "hunan": {
+    "id": 43,
+    "url": "./province.html?id=hunan",
+    "name": "湖南省"
+  },
+  "jiangsu": {
+    "id": 32,
+    "url": "./province.html?id=jiangsu",
+    "name": "江苏省"
+  },
+  "jiangxi": {
+    "id": 36,
+    "url": "./province.html?id=jiangxi",
+    "name": "江西省"
+  },
+  "jilin": {
+    "id": 22,
+    "url": "./province.html?id=jilin",
+    "name": "吉林省"
+  },
+  "liaoning": {
+    "id": 21,
+    "url": "./province.html?id=liaoning",
+    "name": "辽宁省"
+  },
+  "neimenggu": {
+    "id": 15,
+    "url": "./province.html?id=neimenggu",
+    "name": "内蒙古"
+  },
+  "ningxia": {
+    "id": 64,
+    "url": "./province.html?id=ningxia",
+    "name": "宁夏回族自治区"
+  },
+  "qinghai": {
+    "id": 63,
+    "url": "./province.html?id=qinghai",
+    "name": "青海省"
+  },
+  "shandong": {
+    "id": 37,
+    "url": "./province.html?id=shandong",
+    "name": "山东省"
+  },
+  "shanghai": {
+    "id": 31,
+    "url": "./province.html?id=shanghai",
+    "name": "上海市"
+  },
+  "shanxi": {
+    "id": 14,
+    "url": "./province.html?id=shanxi",
+    "name": "山西省"
+  },
+  "shaanxi": {
+    "id": 61,
+    "url": "./province.html?id=shaanxi",
+    "name": "陕西省"
+  },
+  "sichuan": {
+    "id": 51,
+    "url": "./province.html?id=sichuan",
+    "name": "四川省"
+  },
+  "taiwan": {
+    "id": 71,
+    "url": "./province.html?id=taiwan",
+    "name": "台湾省"
+  },
+  "tianjin": {
+    "id": 12,
+    "url": "./province.html?id=tianjin",
+    "name": "天津市"
+  },
+  "xianggang": {
+    "id": 81,
+    "url": "./province.html?id=xianggang",
+    "name": "香港"
+  },
+  "xinjiang": {
+    "id": 65,
+    "url": "./province.html?id=xinjiang",
+    "name": "新疆维吾尔自治区"
+  },
+  "xizang": {
+    "id": 54,
+    "url": "./province.html?id=xizang",
+    "name": "西藏自治区"
+  },
+  "yunnan": {
+    "id": 53,
+    "url": "./province.html?id=yunnan",
+    "name": "云南省"
+  },
+  "zhejiang": {
+    "id": 33,
+    "url": "./province.html?id=zhejiang",
+    "name": "浙江省"
+  }
+}
