@@ -57,12 +57,19 @@ export default {
       this.chart = echarts.init(document.getElementById(this.id));
       this.setOptions(this.chartData)
     },
-    setOptions({ dataAxis, useValue } = {}) {
+    fomatToArr: function (obj) {
+      var dataArr = [];
+      for (var key in obj) {
+        dataArr.push(obj[key])
+      }
+      return dataArr;
+    },
+    setOptions: function ({ dataAxis, values, state } = {}) {
+      var _this = this
       this.chart.setOption({
-        color: ['#3398DB'],
         xAxis: [{
           type: 'category',
-          data: dataAxis,
+          data: _this.fomatToArr(dataAxis),
           axisLine: {
             lineStyle: {
               color: ['#373A4F'],
@@ -93,23 +100,28 @@ export default {
           }
         }],
         series: [{
-          data: useValue,
+          name: '全部',
+          data: _this.fomatToArr(values[0]),
           type: 'line',
           smooth: true,
           symbolSize: 4,
           lineStyle: {
-            color: '#1473FF',
-            width: 2
+            width: 2,
+            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+              offset: 0,
+              color: '#0066FF'
+            }, {
+              offset: 1,
+              color: '#33CCFF'
+            }])
           },
           itemStyle: {
             color: '#fff',
-            borderColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-              offset: 0,
-              color: '#33CCFF'
-            }, {
-              offset: 1,
-              color: '#0066FF'
-            }])
+            formatter: function (value) {
+              var value;
+              value < 1000 ? value = value : value = parseInt(value / 1000) + 'k';
+              return value;
+            },
           },
           areaStyle: {
             color: {
@@ -133,24 +145,111 @@ export default {
             show: true,
             position: 'top',
             align: 'center',
-            backgroundColor: "#2B2D3C",
-            opacity:1,
-            color:"#fff",
             formatter: function (params) {
               var value;
               value = params.value > 10000 ? (params.value / 10000).toFixed(2) + '万' : params.value;
               return value;
             }
           }
+        }, {
+          name: '优秀',
+          data: _this.fomatToArr(values[1]),
+          type: 'line',
+          smooth: true,
+          symbolSize: 4,
+          lineStyle: {
+            width: 1,
+            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+              offset: 0,
+              color: '#FF3333'
+            }, {
+              offset: 1,
+              color: '#FF9900'
+            }])
+          }
+        }, {
+          name: '良好',
+          data: _this.fomatToArr(values[2]),
+          type: 'line',
+          smooth: true,
+          symbolSize: 4,
+          lineStyle: {
+            width: 1,
+            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+              offset: 0,
+              color: '#00CC33'
+            }, {
+              offset: 1,
+              color: '#66FF99'
+            }])
+          }
+        }, {
+          name: '合格',
+          data: _this.fomatToArr(values[3]),
+          type: 'line',
+          smooth: true,
+          symbolSize: 4,
+          lineStyle: {
+            width: 1,
+            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+              offset: 0,
+              color: '#6633CC'
+            }, {
+              offset: 1,
+              color: '#9999FF'
+            }])
+          }
+        }, {
+          name: '鼓励',
+          data: _this.fomatToArr(values[4]),
+          type: 'line',
+          smooth: true,
+          symbolSize: 4,
+          lineStyle: {
+            width: 1,
+            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+              offset: 0,
+              color: '#3399FF'
+            }, {
+              offset: 1,
+              color: '#66FFFF'
+            }])
+          }
         }],
+        legend: {
+          show: state,
+          data: [{
+            name: '全部',
+            icon: '../../assets/images/icon_1.png',
+          }, {
+            name: '优秀',
+            icon: '../../assets/images/icon_2.png',
+          }, {
+            name: '良好',
+            icon: '../../assets/images/icon_3.png',
+          }, {
+            name: '合格',
+            icon: '../../assets/images/icon_4.png',
+          }, {
+            name: '鼓励',
+            icon: '../../assets/images/icon_5.png',
+          }],
+          textStyle: {
+            color: '#A0A5B1',
+          },
+          itemWidth: 10,
+          itemHeight: 10,
+          bottom: 0,
+        },
         grid: {
-          left: '0',
-          right: '25',
-          bottom: '0',
-          containLabel: true
-        }
+          left: '40',
+          right: '15',
+          top: '28',
+          bottom: '70',
+          containLabel: false
+        },
       })
-    },
+    }
   }
 }
 </script>

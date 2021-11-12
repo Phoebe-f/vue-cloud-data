@@ -1,5 +1,5 @@
 <template>
-  <div :id="id" :class="className" :style="{ height: height, width: width }"></div>
+  <div :id="id" :class="className" :style="{ height: height, width: width }" :mapComm="mapComm"></div>
 </template>
 
 <script>
@@ -32,17 +32,15 @@ export default {
     routeName: {
       type: String
     },
-    geoJSON: {
-      type: String
+    mapComm: {
+      type:Object
     }
   },
   data() {
     return {
       chart: null,
+      proJson: "",
     }
-  },
-  created() {
-
   },
   watch: {
     chartData: {
@@ -55,11 +53,13 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.initChart()
-      if (this.routeName == 'home' || this.routeName == "exampleSchool") {
+      if (this.routeName == 'home') {
+        console.log("P")
         this.loadMap("china", "../../../static/china.json")
+        // this.loadMap(this.mapComm.province, "../../../static/china.json")
       } else {
-        // console.log(this.geoJSON)
-        this.loadMap(this.geoJSON, `/list/CloudData/json/province/${this.geoJSON}.json`)
+        this.loadMap('shanghai', "../../../static/province/shanghai.json")
+
       }
     })
   },
@@ -113,18 +113,40 @@ export default {
       setTimeout(function () {
         that.setOptions(that.chartData)
       }, 800)
-      this.chart.on("click", (params) => {
-        this.$emit('clickMap', params)
+      this.chart.on("click", function (params) {
+        if (that.routeName == 'home') {
+          var province = params.data.pinyin;
+          var proNameZh = params.data.name
+          var proJson = provinces[proNameZh]
+          var proQueryData = {}
+          proQueryData.province = province
+          proQueryData.proNameZh = proNameZh
+          proQueryData.proJson = proJson
+
+          // this.mapName = params.data.name
+          // this.proJson = provinces[proNameZh]
+          if (province == 'taiwan' || province == 'xianggang' || province == 'aomen')
+            return false;
+          // that.$emit("getProId", province)
+          that.$emit("getProId", proQueryData)
+          // that.loadMap(proNameZh, this.proJson)
+        } else if (that.routeName == 'exampleSchool') {
+          var province2 = params.data.pid;
+          if (province2 == 'taiwan' || province2 == 'xianggang' || province2 == 'aomen')
+            return false;
+          that.$emit("getProId", province2)
+        }
       })
       // this.setOptions(this.chartData)
     },
     loadMap: function (name, dataJson) {
-      this.$axios.get(dataJson).then(function (res) {
+      this.axios.get(dataJson).then(function (res) {
         var data = res.data
         echarts.registerMap(name, data)
       })
     },
     setOptions({ provinceMapData, valueList } = {}) {
+      // console.log("mapComm" + this.mapComm.province)
       this.chart.setOption({
         visualMap: {
           min: 0,
@@ -140,7 +162,7 @@ export default {
         },
         series: {
           type: 'map',
-          map: this.geoJSON ? this.geoJSON : "china",
+          map: "china",
           // zoom: this.mapComm.province == "china" ? 1.3 : '',
           // layoutCenter: ['50%', '50%'],
           // layoutSize: '100%',

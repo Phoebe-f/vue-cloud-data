@@ -1,5 +1,8 @@
 @import './global.scss';
 
+[v-cloak]{
+  display: none;
+}
 html,body{height: 100%;background-color: #232532;}
 .header {width: 100%; min-width: 1920px;background-color: #373A4F;text-align: center;}
 .header .header-inner{height: 68px;line-height: 68px;padding: 0 28px;}

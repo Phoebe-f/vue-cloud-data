@@ -24,7 +24,7 @@
                   height="640px"
                   :chart-data="provinceMapData"
                   :routeName="routeName"
-                  @getProId="getProId"
+                  @clickMap="getProId"
                 ></map-chart>
               </div>
               <div class="aw-conbox">
@@ -41,7 +41,7 @@
               <div v-for="(item) in schools " :key="item.id" class="main-subox course-subox">
                 <div class="contest-inbox main-inbox">
                   <div class="inbox-top">
-                    <a class="school-info" :href="item.url" target="_blank">
+                    <a class="school-info" :href="item.url" target="_blank" v-cloak>
                       <img :src="item.thumb" :title="item.title" />
                       {{ item.title }}
                     </a>
@@ -98,6 +98,7 @@ export default {
   data() {
     return {
       title: { "name": "全国示范校" },
+      // mapName:"china",
       routeName: '',
       proId: '',
       page: 1,
@@ -116,39 +117,36 @@ export default {
   },
   methods: {
     getData: function () {
-      var that = this
       // https://www.i3done.com/api.php?m=DataCloud&a=getSchoolCloudData
-      this.axios.get("/list/api.php?m=DataCloud&a=getSchoolCloudData")
-        // this.axios.get("/static/json.json")
-        .then(function (data) {
+      this.$axios.get("/list/api.php?m=DataCloud&a=getSchoolCloudData")
+        .then((data) => {
           console.log("example")
           if (data.status) {
             var data = data.data
-            that.prevPage = data.prevPage
-            that.nextPage = data.nextPage
-            that.schoolTotal = data.schoolNum
-            that.provinceData = data.provinceData
-            that.handleMapData(data.provinceData)
-            that.schools = data.schools
+            this.prevPage = data.prevPage
+            this.nextPage = data.nextPage
+            this.schoolTotal = data.schoolNum
+            this.provinceData = data.provinceData
+            this.handleMapData(data.provinceData)
+            this.schools = data.schools
           }
         })
     },
     // 获取省份id -- 切换列表
     getProListData: function (id, page) {
-      var that = this
-      this.axios.get("/list/api.php?m=DataCloud&a=getSchoolCloudData", { params: { pid: id, page: page } })
-        .then(function (data) {
+      this.$axios.get("/list/api.php?m=DataCloud&a=getSchoolCloudData", { params: { pid: id, page: page } })
+        .then((data) => {
           if (data.status) {
             var data = data.data
-            that.prevPage = data.prevPage
-            that.nextPage = data.nextPage
-            that.schools = data.schools
+            this.prevPage = data.prevPage
+            this.nextPage = data.nextPage
+            this.schools = data.schools
           }
         })
     },
     // 获取省份id
-    getProId: function (data) {
-      this.proId = data
+    getProId: function (params) {
+      this.proId = params.data.pid
       this.page = 0
       this.getProListData(this.proId, this.page)
     },
@@ -166,12 +164,12 @@ export default {
         provinceMapData = [],
         valueList = [];
       var len = features.length
-      for (var i = 0; i < len; i++) {
+      for (let i = 0; i < len; i++) {
         provinceList.push(features[i].properties.name)
       }
-      for (var key in data) {
+      for (let key in data) {
         valueList.push(data[key].value)
-        for (var m = 0; m < provinceList.length; m++) {
+        for (let m = 0; m < provinceList.length; m++) {
           if (data[key].name == provinceList[m]) {
             provinceMapData[m] = data[key];
           }

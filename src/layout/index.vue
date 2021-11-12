@@ -48,21 +48,21 @@
       <el-dialog :visible.sync="dialogVisible">
         <div class="province-list level_1 clearfix">
           <a
-            v-for="item in provinceData.top_4"
-            :key="item.id"
+            v-for="(item,index) in schoolGreat"
+            :key="index"
             @click="handelTitle(item), dialogVisible = false"
           >
-            {{ item.name }}
+            {{ item.title }}
             <!-- <router-link :to="{ name: 'province', query: { id: title } }" v-text="item.name"></router-link> -->
           </a>
         </div>
         <div class="province-list level_2 clearfix">
           <a
-            v-for="item in provinceData.rest"
-            :key="item.id"
+            v-for="item,index in schoolNomal"
+            :key="index"
             @click="handelTitle(item), dialogVisible = false"
           >
-            {{ item.name }}
+            {{ item.title }}
             <!-- <router-link :to="{ name: 'province', query: { id: title } }" v-text="item.name"></router-link> -->
           </a>
         </div>
@@ -73,6 +73,7 @@
 </template>
 
 <script>
+// import test from '../../test/e2e/specs/test'
 import AppMain from './components/AppMain'
 
 export default {
@@ -88,44 +89,8 @@ export default {
       dialogVisible: false,
       title: "3D One 数据云图",
       routeName: undefined,
-      provinceData: {
-        top_4: [
-          {
-            id: "top_1",
-            name: "广东省"
-          },
-          {
-            id: "top_2",
-            name: "安徽省"
-          },
-          {
-            id: "top_3",
-            name: "福建省"
-          },
-          {
-            id: "top_4",
-            name: "四川省"
-          },
-        ],
-        rest: [
-          {
-            id: 1,
-            name: "新疆"
-          },
-          {
-            id: 2,
-            name: "湖南省"
-          },
-          {
-            id: 3,
-            name: "哈尔滨"
-          },
-          {
-            id: 4,
-            name: "云南"
-          },
-        ]
-      }
+      schoolGreat: [],
+      schoolNomal: []
     }
   },
   watch: {
@@ -138,21 +103,35 @@ export default {
     }
   },
   created: function () {
+    this.getMenu()
     this.getBreadcrumb()
     this.getTime();
     setInterval(this.getTime, 1000)
   },
   methods: {
+    getMenu: function () {
+      this.$axios.get('../../static/menu.json').
+        then((data) =>{
+          var data = data.data
+          this.schoolGreat = this.handelSchoolList(data.great)
+          this.schoolNomal = this.handelSchoolList(data.nomal)
+        })
+    },
+    handelSchoolList: function (data) {
+      var arr = []
+      for (let key in data) {
+        arr.push(data[key])
+      }
+      return arr
+    },
     handelTitle: function (item) {
-      this.title = item.name
-      document.title = item.name
+      var url = item.url
+      var params = url.indexOf("?")
+      var _id = url.slice(params + 4)
+      this.title = item.title
+      document.title = item.title
       this.$router.push({
-        path: `/province/${this.title}`,
-        // name: 'province',
-        // params: {
-        //   id: this.title
-        // }
-        //  path: 'province', query: { id: this.title }
+        path: `/province/${_id}`,
       })
     },
     getBreadcrumb() {
@@ -170,7 +149,7 @@ export default {
       var min = now.getMinutes();
       var sec = now.getSeconds();
       this.time = year + '-' + (mou > 9 ? mou : '0' + mou) + '-' + (day > 9 ? day : '0' + day) + ' ' + (hour > 9 ? hour : '0' + hour) + ':' + (min > 9 ? min : '0' + min) + ':' + (sec > 9 ? sec : '0' + sec)
-    }
+    },
   },
   beforeDestroy: function () {
     clearInterval()
@@ -181,7 +160,7 @@ export default {
 .el-dialog {
   background-color: #232532;
   box-shadow: 0px 0px 50px rgb(24 25 30);
-  width: 31%;
+  width: 32%;
 }
 </style>
 <style scoped>
@@ -199,21 +178,21 @@ export default {
   border-radius: 4px;
 }
 .province-list.level_1 a {
-  margin-left: 0;
+  /* margin-left: 0; */
   margin-bottom: 0;
-  width: 136px;
+  width: 128px;
   height: 48px;
   line-height: 48px;
   background-color: #2b2d3c;
   border-radius: 0;
 }
-.province-list.level_1 a:nth-of-type(-n + 3) {
-  border-right: 0;
+.province-list.level_1 a:last-of-type {
+  /* border-right: 0; */
 }
 .province-list.level_2 {
   padding-top: 30px;
 }
 .province-list.level_2 a:first-of-type {
-  margin-left: 0;
+  /* margin-left: 0; */
 }
 </style>

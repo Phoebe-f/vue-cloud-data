@@ -15,12 +15,12 @@
               </div>
             </div>
             <div class="inbox-cont city-model-line-cont">
-              <multi-line
+              <line-chart
                 id="multi-line_1"
                 class="multi-line_1"
                 height="210px"
                 :chart-data="total_mon == 0 ? modelData2.unitChart : modelData1.unitChart"
-              ></multi-line>
+              ></line-chart>
             </div>
             <div class="inbox-cont city-model-pie-cont clearfix">
               <div class="city-model-pie fl">
@@ -180,13 +180,15 @@
               <span class="tit">全省入驻学校排行</span>
             </div>
             <div class="inbox-cont">
-              <!-- <map-chart
+              <map-chart
                 class="city-map"
                 id="city-map"
-                width="550px"
+                width="500px"
                 height="417px"
                 :chart-data="dataCityMap"
-              ></map-chart> -->
+                @clickMap="getProId"
+                :geoJSON="proPY"
+              ></map-chart>
             </div>
           </div>
           <div class="main-inbox sch-rank fr">
@@ -213,18 +215,18 @@
             <div class="inbox-top clearfix">
               <span class="tit">
                 教学成果
-                <i v-text="threeBarData.courseNum"></i>
+                <i v-text="courseData.courseNum"></i>
               </span>
             </div>
             <div class="inbox-cont">
               <ul class="course-list clearfix">
                 <li>
                   <em>学习人次</em>
-                  <i v-text="threeBarData.viewCount"></i>
+                  <i v-text="courseData.viewCount"></i>
                 </li>
                 <li>
                   <em>下载次数</em>
-                  <i v-text="threeBarData.downCount"></i>
+                  <i v-text="courseData.downCount"></i>
                 </li>
               </ul>
               <div class="progress-wrap">
@@ -233,7 +235,6 @@
                   id="bar-chart-1"
                   height="174px"
                   :barData="threeBarData"
-                  :barTitle="barTitle"
                 ></three-bar>
               </div>
             </div>
@@ -256,7 +257,7 @@
                     <span>
                       <font v-text="index + 1"></font>
                       <a>
-                        <img :src="item.avatar" :alt="item.nickname" />
+                        <img :src="item.avatar" :alt="item.nickname" v-cloak />
                         {{ item.nickname }}
                       </a>
                     </span>
@@ -352,7 +353,7 @@
                         <span>
                           <font v-text="index + 1"></font>
                           <a>
-                            <img :src="item.thumb" :alt="item.title" />
+                            <img :src="item.thumb" :alt="item.title" v-cloak />
                             {{ item.title }}
                           </a>
                         </span>
@@ -374,19 +375,20 @@
 
 <script>
 import * as echarts from 'echarts'
-import MultiLine from '../components/multiLineChart/multiLineChart'
+import LineChart from '../components/lineChart/index'
 import BarChart from '../components/verticalBar/index'
 import ThreeBar from '../components/threeBar/threeBar'
 import MapChart from '../components/mapChart/index'
-import '../utils/china.js'
-// import china from 'echarts/map/json/china.json'
+// import '../utils/china.js'
 
-import Swiper from 'swiper';
+import commMix from '../utils/commMix.js'
+
 
 
 export default {
+  mixins: [commMix],
   components: {
-    MultiLine,
+    LineChart,
     BarChart,
     ThreeBar,
     MapChart
@@ -402,6 +404,7 @@ export default {
       worksNum: '',
       userChart: {},//创新教师数据
       threeBarData: {},
+      courseData: {},
       teacSwiper: "",
       schoolSwiper: "",
       creater: [],//优秀创客
@@ -423,7 +426,7 @@ export default {
       cityChart1: {},//mon
       cityChart2: {},//total
       dataCityMap: {
-        cityMapData: [
+        provinceMapData: [
           { name: '成都市', value: 931, url: '' },
           { name: '自贡市', value: 105, url: '' },
           { name: '攀枝花市', value: 57, url: '' },
@@ -434,20 +437,22 @@ export default {
           { name: '遂宁市', value: 68, url: '' },
           { name: '内江市', value: 86, url: '' },
           { name: '乐山市', value: 77, url: '' },
-        ]
+        ],
+        valueList: [174, 50, 41, 37, 29, 10, 8, 5]
       },
       schoolData: [],
       par_province: "",
       par_city: "",
+      proPY: ""
     }
   },
   mounted() {
-    
+
 
   },
   created() {
-    this.getData(this.par_province)
-    this.par_province = this.$route.params.id
+    this.getData(this.proPY)
+    this.proPY = this.$route.params.id
     this.cityChart1.code = this.$route.params.id
     this.cityChart2.code = this.$route.params.id
     this.userChart.code = this.$route.params.id
@@ -455,12 +460,12 @@ export default {
   methods: {
     getData: function () {
       var that = this
-      this.axios.get('../../static/province.json').then(function (data) {
+      this.$axios.get('../../static/province.json').then(function (data) {
         var data = data.data
-        var province = data[that.par_province]
+        var province = data[that.proPY]
         var provinceId = province.id
         document.title = province.name
-        that.axios.get("/list/api.php?m=DataCloud&a=getProvinceCloudData", { params: { pid: provinceId } })
+        that.$axios.get("/list/api.php?m=DataCloud&a=getProvinceCloudData", { params: { pid: provinceId } })
           .then(function (data) {
             if (data.status) {
               var data = data.data
@@ -468,7 +473,8 @@ export default {
               that.schoolNum = data.schoolCount
               that.useNum = data.memberCount
               that.worksNum = data.modelCount
-              that.threeBarData = data.courseData
+              that.courseData = data.courseData
+              that.threeBarData = that.handleThreeBarData(data.courseData)
               that.modelData1 = data.modelData1
               that.modelData2 = data.modelData2
               that.cityChart1 = that.handleCityChart(data.modelData1.cityChart)
@@ -480,7 +486,6 @@ export default {
               that.memberRankList4 = data.memberRankList4
               that.userChart = that.handleUserChart(data.userChart)
               that.userChart.xchange = true
-              that.handleThreeBarData()
               that.lists = data.lists
               data.lists.forEach(function (item, i) {
                 that.schoolData.push({
@@ -490,24 +495,41 @@ export default {
                 })
               })
               that.handelCityMapData(that.schoolData)
-              // console.log(that.schoolData)
               that.$nextTick(function () {//两个轮播
-                that.teacSwiper = that.swiperFun("#swiper-container_1", 70)
-                that.schoolSwiper = that.swiperFun("#swiper-container_2", 40)
+                that.teacSwiper = that.swiperFun("#swiper-container_1", 70, 1800)
+                that.schoolSwiper = that.swiperFun("#swiper-container_2", 40, 1800)
               })
             }
           })
-
       })
     },
+    getProId: function (data) {
+      console.log(data)
+      // this.proQueryData = data
+    },
     // 教学成果--数据处理 
-    handleThreeBarData: function () {
-      this.threeBarData.num_1 = this.threeBarData.trainTotal
-      this.threeBarData.num_2 = this.threeBarData.newsTotal
-      this.threeBarData.num_3 = this.threeBarData.courseTotal
-      this.threeBarData.per_1 = this.threeBarData.trainPercent
-      this.threeBarData.per_2 = this.threeBarData.newsPercent
-      this.threeBarData.per_3 = this.threeBarData.coursePercent
+    handleThreeBarData: function (data) {
+      var barData = []
+      var bookData = {
+        id: 1,
+        name: this.barTitle[0],
+        total: data.trainTotal,
+        per: data.trainPercent + '%'
+      }
+      var courseData = {
+        id: 2,
+        name: this.barTitle[1],
+        total: data.newsTotal,
+        per: data.newsPercent + '%'
+      }
+      var newsData = {
+        id: 3,
+        name: this.barTitle[2],
+        total: data.courseTotal,
+        per: data.coursePercent + '%'
+      }
+      barData.push(bookData, courseData, newsData)
+      return barData
     },
     // 创新教师--数据处理
     handleUserChart: function (data) {
@@ -540,18 +562,11 @@ export default {
     },
     // 地图数据处理
     handelCityMapData: function (data) {
-      // var features = echarts.getMap(this.option.code).geoJson.features;
-      // console.log(this.par_province)
-      if (data.length) {
-        echarts.registerMap(this.par_province, data)
-      }
-      var features = echarts.getMap("china").geoJson.features;
-      console.log(features)
+      var features = echarts.getMap(this.proPY).geoJson.features;
       var cityList = [],
         cityMapData = [],
         valueList = [];
       var len = features.length
-      // var cityMapChart = echarts.init(document.getElementById(id));
       for (var i = 0; i < len; i++) {
         cityList.push(features[i].properties.name)
       }
@@ -562,40 +577,15 @@ export default {
           if (reg.test(cityList[m])) {
             data[j].name = cityList[m];
             cityMapData[m] = data[j];
-            console.log(cityMapData)
           }
         }
       }
-      console.log(cityMapData)
-      this.dataCityMap.cityList = cityList
-      // this.dataCityMap.provinceMapData = cityMapData
+      // this.dataCityMap.cityList = cityList
+      this.dataCityMap.provinceMapData = cityMapData
       this.dataCityMap.valueList = valueList
-      console.log(this.dataCityMap)
       this.dataCityMap.code = ""
     },
-    stopPlay: function (item) {
-      item.stopAutoplay();
-    },
-    startPlay: function (item) {
-      item.startAutoplay();
-    },
-    swiperFun: function (name, height) {
-      if (this.name != null) return;
-      return new Swiper(name, {
-        speed: 1800,//匀速时间
-        // loop:true,
-        autoplay: {
-          delay: 0,
-          stopOnLastSlide: false,
-          disableOnInteraction: true,
-        },
-        direction: 'vertical',
-        height: height,
-        observer: true,
-        observeParents: true,
-        index: 0
-      })
-    }
+
   }
 }
 </script>
@@ -608,11 +598,11 @@ export default {
   -o-transition-timing-function: linear;
   transition-timing-function: linear;
 }
-.center-wrapper .map-subox .inbox-cont {
+.center-wrapper .map-subox .inbox-cont .data-list-con {
   width: 260px;
   overflow: hidden;
 }
-.center-wrapper .map-subox .inbox-cont .data-list-con {
+.center-wrapper .map-subox .inbox-cont .data-list-con .data-list {
   padding-right: 20px;
   height: 420px;
   width: 260px;

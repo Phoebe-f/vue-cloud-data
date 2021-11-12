@@ -1,0 +1,180 @@
+{
+	"menu": { 
+		"0": {
+			"id": "index",
+			"url": "./index.html",
+			"title": "3D One数据云图"
+		},
+		"1": {
+			"id": "schools",
+			"url": "./schools.html",
+			"title": "全国示范校"
+		},
+		"2": {
+			"id": "province",
+			"url": "javascript:;",
+			"title": "各省数据云图"
+		}
+	},
+	"menu2": { 
+		"0": {
+			"id": "contest",
+			"url": "./contest.html",
+			"title": "3D One赛事云图"
+		},
+		"1": {
+			"id": "book",
+			"url": "./book.html",
+			"title": "3D One教材云图"
+		},
+		"2": {
+			"id": "train",
+			"url": "./train.html",
+			"title": "3D One培训云图"
+		}
+	},
+	"great": {
+		"1": {
+			"url": "./province.html?id=beijing",
+			"title": "北京市"
+		},
+		"2": {
+			"url": "./province.html?id=guangdong",
+			"title": "广东省"
+		},
+		"3": {
+			"url": "./province.html?id=jiangsu",
+			"title": "江苏省"
+		},
+		"4": {
+			"url": "./province.html?id=shandong",
+			"title": "山东省"
+		}
+	},
+	"nomal": {
+		"1": {
+			"url": "./province.html?id=anhui",
+			"title": "安徽省"
+		},
+		"2": {
+			"url": "./province.html?id=beijing",
+			"title": "北京市"
+		},
+		"3": {
+			"url": "./province.html?id=chongqing",
+			"title": "重庆市"
+		},
+		"4": {
+			"url": "./province.html?id=fujian",
+			"title": "福建省"
+		},
+		"5": {
+			"url": "./province.html?id=gansu",
+			"title": "甘肃省"
+		},
+		"6": {
+			"url": "./province.html?id=guangdong",
+			"title": "广东省"
+		},
+		"7": {
+			"url": "./province.html?id=guangxi",
+			"title": "广西壮族自治区"
+		},
+		"8": {
+			"url": "./province.html?id=guizhou",
+			"title": "贵州省"
+		},
+		"9": {
+			"url": "./province.html?id=hainan",
+			"title": "海南省"
+		},
+		"10": {
+			"url": "./province.html?id=heilongjiang",
+			"title": "黑龙江"
+		},
+		"11": {
+			"url": "./province.html?id=hebei",
+			"title": "河北省"
+		},
+		"12": {
+			"url": "./province.html?id=henan",
+			"title": "河南省"
+		},
+		"13": {
+			"url": "./province.html?id=hubei",
+			"title": "湖北省"
+		},
+		"14": {
+			"url": "./province.html?id=hunan",
+			"title": "湖南省"
+		},
+		"15": {
+			"url": "./province.html?id=jiangsu",
+			"title": "江苏省"
+		},
+		"16": {
+			"url": "./province.html?id=jiangxi",
+			"title": "江西省"
+		},
+		"17": {
+			"url": "./province.html?id=jilin",
+			"title": "吉林省"
+		},
+		"18": {
+			"url": "./province.html?id=liaoning",
+			"title": "辽宁省"
+		},
+		"19": {
+			"url": "./province.html?id=neimenggu",
+			"title": "内蒙古"
+		},
+		"20": {
+			"url": "./province.html?id=ningxia",
+			"title": "宁夏回族自治区"
+		},
+		"21": {
+			"url": "./province.html?id=qinghai",
+			"title": "青海省"
+		},
+		"22": {
+			"url": "./province.html?id=shaanxi",
+			"title": "陕西省"
+		},
+		"23": {
+			"url": "./province.html?id=shanghai",
+			"title": "上海市"
+		},
+		"24": {
+			"url": "./province.html?id=shandong",
+			"title": "山东省"
+		},
+		"25": {
+			"url": "./province.html?id=shanxi",
+			"title": "山西省"
+		},
+		"26": {
+			"url": "./province.html?id=sichuan",
+			"title": "四川省"
+		},
+		"27": {
+			"url": "./province.html?id=tianjin",
+			"title": "天津市"
+		},
+		"28": {
+			"url": "./province.html?id=xinjiang",
+			"title": "新疆维吾尔自治区"
+		},
+		"29": {
+			"url": "./province.html?id=xizang",
+			"title": "西藏自治区"
+		},
+		"30": {
+			"url": "./province.html?id=yunnan",
+			"title": "云南省"
+		},
+		"31": {
+			"url": "./province.html?id=zhejiang",
+			"title": "浙江省"
+		}
+	}
+}

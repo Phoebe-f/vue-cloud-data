@@ -1,31 +1,13 @@
 <template>
   <div class="three-bar-con">
     <dl>
-      <dd>
-        <p class="text">
-          {{barTitle[0]}}
-          <em>{{ barData.num_1 }}</em>
+      <dd v-for="item in barData" :key="item.id">
+        <p class="text" v-cloak>
+          {{ item.name }}
+          <em v-cloak>{{ item.total }}</em>
         </p>
         <p class="progress">
-          <span class="probar" :style="{ width: barData.per_1 + '%' }"></span>
-        </p>
-      </dd>
-      <dd>
-        <p class="text">
-          {{barTitle[1]}}
-          <em>{{ barData.num_2 }}</em>
-        </p>
-        <p class="progress">
-          <span class="probar" :style="{ width: barData.per_2+ '%' }"></span>
-        </p>
-      </dd>
-      <dd>
-        <p class="text">
-          {{barTitle[2]}}
-          <em>{{ barData.num_3 }}</em>
-        </p>
-        <p class="progress">
-          <span class="probar" :style="{ width: barData.per_3 + '%' }"></span>
+          <span class="probar" :style="{ width: item.per }"></span>
         </p>
       </dd>
     </dl>
@@ -34,14 +16,14 @@
 <script>
 
 export default {
-  props: ['barData','barTitle'],
+  props: ['barData'],
   data() {
     return {
 
     }
   },
   created() {
-    
+
   }
 }
 </script>

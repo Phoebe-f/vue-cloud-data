@@ -8,11 +8,11 @@
             <div class="inbox-top clearfix">
               <span class="tit">
                 3D One 近7日使用人次
-                <i id="seven-use">372275</i>
+                <i v-text="sevenDays.total"></i>
               </span>
               <div class="tab">
                 今日使用人次
-                <a id="today-use">59507</a>
+                <a v-text="sevenDays.today"></a>
               </div>
             </div>
             <div class="inbox-cont">
@@ -22,7 +22,7 @@
                   id="bar-chart"
                   width="389px"
                   height="214px"
-                  :chart-data="barChartData"
+                  :chart-data="sevenDays"
                 ></bar-chart>
               </div>
             </div>
@@ -33,7 +33,7 @@
             <div class="inbox-top clearfix">
               <span class="tit">
                 3D One 近五月使用人次
-                <i id="week-use">3607127</i>
+                <i v-text="totalUse"></i>
               </span>
             </div>
             <div class="inbox-cont">
@@ -93,11 +93,11 @@
               <map-chart
                 id="map-chart"
                 class="map-chart"
-                width="550px"
-                height="417px"
+                width="580px"
+                height="420px"
                 :chart-data="mapChange == 0 ? province3 : mapChange == 1 ? province4 : province5"
                 :routeName="routeName"
-                @getProId="getProId"
+                @clickMap="getProId"
               ></map-chart>
             </div>
           </div>
@@ -109,49 +109,90 @@
                 <i data-tab="5" :class="{ on: mapChange == 2 }" @click="mapChange = 2">教师</i>
               </div>
             </div>
-            <div class="inbox-cont province-data-cont">
-              <ul class="data-list province-data-list">
-                <li
-                  v-for="(item) in mapDataPage(mapChange == 0 ? (province3Page) : mapChange == 1 ? (province4Page) : (province5Page),
-                  mapChange == 0 ? (page3Params) : mapChange == 1 ? (page4Params) : (page5Params))"
-                  :key="item.id"
-                  :class="{ first: item.ranking < 4 }"
-                >
-                  <span>
-                    <font v-text="item.ranking"></font>
-                    <a v-text="item.name"></a>
-                  </span>
-                  <i>
-                    <em v-text="item.value"></em>
-                    <em v-text="item.percent + '%'"></em>
-                  </i>
-                </li>
-              </ul>
-              <div v-if="mapChange == 0" class="page">
-                <a class="prev" @click="prevPage(province3Page, page3Params)">
-                  <img src="../assets/images/preve.png" title="上一页" />
-                </a>
-                <a class="next" @click="nextPage(province3Page, page3Params)">
-                  <img src="../assets/images/next.png" title="下一页" />
-                </a>
+            <template v-if="mapChange == 0">
+              <div class="inbox-cont province-data-cont">
+                <ul class="data-list province-data-list">
+                  <li
+                    v-for="item in mapDataPage(province3Page, page3Params)"
+                    :key="item.id"
+                    :class="{ first: item.ranking < 4 }"
+                  >
+                    <span>
+                      <font v-text="item.ranking"></font>
+                      <a v-text="item.name"></a>
+                    </span>
+                    <i>
+                      <em v-text="item.value"></em>
+                      <em v-text="item.percent + '%'"></em>
+                    </i>
+                  </li>
+                </ul>
+                <div class="page">
+                  <a class="prev" @click="prevPage(province3Page, page3Params)">
+                    <img src="../assets/images/preve.png" title="上一页" />
+                  </a>
+                  <a class="next" @click="nextPage(province3Page, page3Params)">
+                    <img src="../assets/images/next.png" title="下一页" />
+                  </a>
+                </div>
               </div>
-              <div v-else-if="mapChange == 1" class="page">
-                <a class="prev" @click="prevPage(province4Page, page4Params)">
-                  <img src="../assets/images/preve.png" title="上一页" />
-                </a>
-                <a class="next" @click="nextPage(province4Page, page4Params)">
-                  <img src="../assets/images/next.png" title="下一页" />
-                </a>
+            </template>
+            <template v-else-if="mapChange == 1">
+              <div class="inbox-cont province-data-cont">
+                <ul class="data-list province-data-list">
+                  <li
+                    v-for="item in mapDataPage(province4Page, page4Params)"
+                    :key="item.id"
+                    :class="{ first: item.ranking < 4 }"
+                  >
+                    <span>
+                      <font v-text="item.ranking"></font>
+                      <a v-text="item.name"></a>
+                    </span>
+                    <i>
+                      <em v-text="item.value"></em>
+                      <em v-text="item.percent + '%'"></em>
+                    </i>
+                  </li>
+                </ul>
+                <div class="page">
+                  <a class="prev" @click="prevPage(province4Page, page4Params)">
+                    <img src="../assets/images/preve.png" title="上一页" />
+                  </a>
+                  <a class="next" @click="nextPage(province4Page, page4Params)">
+                    <img src="../assets/images/next.png" title="下一页" />
+                  </a>
+                </div>
               </div>
-              <div v-else-if="mapChange == 2" class="page">
-                <a class="prev" @click="prevPage(province4Page, page4Params)">
-                  <img src="../assets/images/preve.png" title="上一页" />
-                </a>
-                <a class="next" @click="nextPage(province5Page, page5Params)">
-                  <img src="../assets/images/next.png" title="下一页" />
-                </a>
+            </template>
+            <template v-else-if="mapChange == 2">
+              <div class="inbox-cont province-data-cont">
+                <ul class="data-list province-data-list">
+                  <li
+                    v-for="item in mapDataPage(province5Page, page5Params)"
+                    :key="item.id"
+                    :class="{ first: item.ranking < 4 }"
+                  >
+                    <span>
+                      <font v-text="item.ranking"></font>
+                      <a v-text="item.name"></a>
+                    </span>
+                    <i>
+                      <em v-text="item.value"></em>
+                      <em v-text="item.percent + '%'"></em>
+                    </i>
+                  </li>
+                </ul>
+                <div class="page">
+                  <a class="prev" @click="prevPage(province5Page, page5Params)">
+                    <img src="../assets/images/preve.png" title="上一页" />
+                  </a>
+                  <a class="next" @click="nextPage(province5Page, page5Params)">
+                    <img src="../assets/images/next.png" title="下一页" />
+                  </a>
+                </div>
               </div>
-            </div>
+            </template>
           </div>
         </div>
         <div class="main-subox course-subox clearfix">
@@ -174,7 +215,7 @@
                 </li>
               </ul>
               <div class="three-bar-wrapper">
-                <three-bar :barData="course" :barTitle="barTitle"></three-bar>
+                <three-bar :barData="threeData"></three-bar>
               </div>
             </div>
           </div>
@@ -241,12 +282,12 @@
             </div>
             <div class="inbox-cont model-line-cont">
               <div class="model-line-chart">
-                <multi-line
+                <line-chart
                   id="multi-line"
                   class="multi-line"
                   height="250px"
                   :chart-data="total_mon == 0 ? (modelData2.unitChart) : (modelData1.unitChart)"
-                ></multi-line>
+                ></line-chart>
               </div>
             </div>
             <div class="inbox-cont model-pie-cont clearfix">
@@ -281,7 +322,7 @@
                     <a>
                       <img :src="item.avatar" :alt="item.nickname" />
                       <span v-text="item.nickname"></span>
-                      <i>活跃No.{{ index + 1 }} 月作品{{ item.total }}</i>
+                      <i v-cloak>活跃No.{{ index + 1 }} 月作品{{ item.total }}</i>
                     </a>
                   </div>
                 </div>
@@ -309,7 +350,7 @@
                               <span v-text="item.nickname"></span>
                             </a>
                             <a>
-                              <i>发布了作品{{ item.title }}</i>
+                              <i v-cloak>发布了作品{{ item.title }}</i>
                             </a>
                           </div>
                           <div class="line-time fr">
@@ -320,7 +361,7 @@
                     </div>
                   </div>
                 </div>
-                <!-- <div class="user-list" v-else>暂无更多数据</div> -->
+                <div class="user-list" v-else>暂无更多数据</div>
               </div>
             </div>
           </div>
@@ -331,41 +372,49 @@
 </template>
 
 <script>
-// import AppHeader from '../components/common/header'
+window._mapData = {
+  province: "china",
+  proNameZh: "中国",
+  proJson: "../../../static/china.json",
+}
 import * as echarts from 'echarts'
 
 import BarChart from '../components/verticalBar/index'
 import LineChart from '../components/lineChart/index'
 import MultihorBar from '../components/multiHorBar/index'
-import MultiLine from '../components/multiLineChart/multiLineChart'
 import ThreeBar from '../components/threeBar/threeBar'
 import PieBottom from '../components/pieChart/pieChart_1'
 import PieTop from '../components/pieChart/pieChart_2'
 import MapChart from '../components/mapChart/index'
 // import '../utils/china.js'
 
-
-import Swiper from 'swiper';
+import commMix from '../utils/commMix.js'
 
 
 export default {
+  mixins: [commMix],
   components: {
     // AppHeader,
     BarChart,
     LineChart,
     MultihorBar,
     ThreeBar,
-    MultiLine,
+    // MultiLine,
     PieBottom,
     PieTop,
     MapChart
   },
   data() {
     return {
+      totalUse: 0,
+      mapName: "china",
       chinaChartData: {},
       barTitle: ['书籍', '案例', '课程 '],
-      barChartData: {},
-      lineChartData: {},
+      sevenDays: {},
+      lineChartData: {
+        dataAxis: {},
+        values: []
+      },
       fiveYears: {
         multiBarData: {
           attaData: [],
@@ -373,6 +422,7 @@ export default {
         }
       },
       course: {},
+      threeData: {},
       contest: {},
       modelData1: {},
       modelData2: {
@@ -420,6 +470,7 @@ export default {
     }
   },
   created() {
+
     this.getData()
     this.mapDataPage(this.province3Page, this.page3Params)
     this.routeName = this.$route.name
@@ -432,65 +483,88 @@ export default {
     getData: function () {
       var that = this
       // https://www.i3done.com/api.php?m=DataCloud&a=getCloudData
-      this.axios.get("/list/api.php?m=DataCloud&a=getCloudData")
-        .then(function (data) {
+      this.$axios.get("/list/api.php?m=DataCloud&a=getCloudData")
+        .then((data) => {
           console.log("home")
           if (data.status) {
             var data = data.data
-            that.schoolNum = data.schoolCount
-            that.useNum = data.personCount
-            that.worksNum = data.modelCount
-            that.barChartData = data.sevenDays
-            that.barChartData.code = ''
-            that.barChartData.xchaneg = true
-            that.lineChartData = that.handleLineChartData(data.fiveWeeks)
-            that.fiveYears = that.handleMultiBarData(data.fiveYears)
-            that.course = data.course
-            that.contest = data.contest
-            that.modelData1 = data.modelData1
-            that.modelData1.unitChart.state = true
-            that.modelData2 = data.modelData2
-            that.modelData2.unitChart.state = true
-            that.dynamicRank = data.dynamicRank
-            that.province3 = that.handleMapData(data.province3);
-            that.province4 = that.handleMapData(data.province4);
-            that.province5 = that.handleMapData(data.province5);
-            that.province3Page = data.province3
-            that.province4Page = data.province4
-            that.province5Page = data.province5
-            that.handleThreeBarData()
-            that.$nextTick(function () {//轮播
-              that.userSwiper = that.swiperFun('#swiper-container_3', 50)
+            this.schoolNum = data.schoolCount
+            this.useNum = data.personCount
+            this.worksNum = data.modelCount
+            this.sevenDays = data.sevenDays
+            this.sevenDays.code = ''
+            this.sevenDays.xchaneg = true
+            this.lineChartData = this.handleLineChartData(data.fiveWeeks)
+            this.totalUse = this.handelTotalUse(data.fiveWeeks)
+            this.fiveYears = this.handleMultiBarData(data.fiveYears)
+            this.course = data.course
+            this.threeData = this.handleThreeBarData(data.course)
+            this.contest = data.contest
+            this.modelData1 = data.modelData1
+            this.modelData1.unitChart.state = true
+            this.modelData2 = data.modelData2
+            this.modelData2.unitChart.state = true
+            this.dynamicRank = data.dynamicRank
+            this.province3 = this.handleMapData(data.province3);
+            this.province4 = this.handleMapData(data.province4);
+            this.province5 = this.handleMapData(data.province5);
+            this.province3Page = data.province3
+            this.province4Page = data.province4
+            this.province5Page = data.province5
+            this.$nextTick(function () {//轮播
+              this.userSwiper = this.swiperFun('#swiper-container_3', 50, 1800)
             })
           }
         })
     },
     //获取省份拼音
-    getProId: function (data) {
+    getProId: function (params) {
+      var province = params.data.pinyin
+      if (province == 'taiwan' || province == 'xianggang' || province == 'aomen')
+        return false;
       this.$router.push({
-        path: `province/${data}`,
+        path: `province/${province}`,
       })
     },
+    handelTotalUse: function (data) {
+      var totalUse = 0;
+      for (let key in data.value) {
+        totalUse += parseInt(data.value[key])
+      }
+      return totalUse
+    },
     // 教学成果数据处理 
-    handleThreeBarData: function () {
-      this.course.num_1 = this.course.bookTotal
-      this.course.num_2 = this.course.newsTotal
-      this.course.num_3 = this.course.courseTotal
-      this.course.per_1 = this.course.bookPercent
-      this.course.per_2 = this.course.newsPercent
-      this.course.per_3 = this.course.coursePercent
+    handleThreeBarData: function (data) {
+      // var barTitle = ['书籍', '案例', '课程 ']
+      var barData = []
+      var bookData = {
+        id: 1,
+        name: this.barTitle[0],
+        total: data.bookTotal,
+        per: data.bookPercent + '%'
+      }
+      var courseData = {
+        id: 2,
+        name: this.barTitle[1],
+        total: data.newsTotal,
+        per: data.newsPercent + '%'
+      }
+      var newsData = {
+        id: 3,
+        name: this.barTitle[2],
+        total: data.courseTotal,
+        per: data.coursePercent + '%'
+      }
+      barData.push(bookData, courseData, newsData)
+      return barData
     },
     // line-chart----handelData
     handleLineChartData: function (data) {
       var lineData = {}
-      lineData.dataAxis = []
-      lineData.useValue = []
-      for (let key in data.dataAxis) {
-        lineData.dataAxis.push(key)
-      }
-      for (let key in data.value) {
-        lineData.useValue.push(data.value[key])
-      }
+      var arr = []
+      arr.push(data.value)
+      lineData.dataAxis = data.dataAxis
+      lineData.values = arr
       return lineData
     },
     // multiBarData----handelData
@@ -505,7 +579,6 @@ export default {
       data.list.forEach(function (item, index) {
         fiveYears.multiBarData.topName.push(item.name)
         fiveYears.multiBarData.attaData.push(item.value)
-
       });
       // this.testmultiBarData = fiveYears.multiBarData
       return fiveYears
@@ -518,12 +591,12 @@ export default {
         valueList = [],
         provinceMapData = []
       var len = features.length
-      for (var i = 0; i < len; i++) {
+      for (let i = 0; i < len; i++) {
         provinceList.push(features[i].properties.name)
       }
-      for (var j = 0; j < data.length; j++) {
+      for (let j = 0; j < data.length; j++) {
         valueList.push(data[j].value)
-        for (var m = 0; m < provinceList.length; m++) {
+        for (let m = 0; m < provinceList.length; m++) {
           if (data[j].name == provinceList[m]) {
             provinceMapData[m] = data[j];
           }
@@ -553,29 +626,6 @@ export default {
         page.pageNo--
         this.mapDataPage(data, page)
       }
-    },
-    // 轮播函数
-    swiperFun: function (name, height) {
-      return new Swiper(name, {
-        speed: 1800,//匀速时间
-        loop: true,
-        autoplay: {
-          delay: 0,
-          // stopOnLastSlide: false,
-          disableOnInteraction: true,
-        },
-        direction: 'vertical',
-        height: height,
-        observer: true,
-        observeParents: true,
-        index: 0
-      })
-    },
-    stopPlay: function (item) {
-      item.stopAutoplay();
-    },
-    startPlay: function (item) {
-      item.startAutoplay();
     },
   }
 }

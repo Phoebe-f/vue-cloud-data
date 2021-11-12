@@ -4,30 +4,25 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
-import Axios from 'axios';
-import VueAxios from 'vue-axios';
-
-
-
+import axios from 'axios';
 
 import ElementUI from 'element-ui';    // 
 import 'element-ui/lib/theme-chalk/index.css';    // 
 
-// import getTime from './components/getTime.js'
 
 import * as echarts from 'echarts'
 Vue.prototype.$echarts = echarts
-import './utils/china.js'
+// import './utils/china.js'
+
 
 import '@/styles/index.scss'
 
-Vue.use(VueAxios, Axios);    //注意顺序
-// Vue.prototype.$getTime = getTime
+Vue.prototype.$axios = axios  
 
 Vue.config.productionTip = false
 Vue.use(ElementUI, { size: 'small', zIndex: 3000 })
 
-Vue.prototype.jsonUrl ="/static/json.json"
+
 
 /* eslint-disable no-new */
 router.beforeEach((to, from, next) => {
@@ -37,6 +32,9 @@ router.beforeEach((to, from, next) => {
   }
   next()
 })
+
+
+
 new Vue({
   el: '#app',
   router,

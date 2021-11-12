@@ -16,12 +16,12 @@
   "dependencies": {
     "axios": "^0.23.0",
     "core-js": "^3.18.3",
+    "echarts": "^5.2.2",
     "element-ui": "^2.15.6",
     "eslint": "^8.0.1",
     "swiper": "^3.4.2",
     "vue": "^2.5.2",
     "vue-awesome-swiper": "^4.1.1",
-    "vue-axios": "^3.3.7",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
@@ -44,7 +44,6 @@
     "copy-webpack-plugin": "^4.0.1",
     "cross-spawn": "^5.0.1",
     "css-loader": "^0.28.0",
-    "echarts": "^5.2.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-loader": "^1.7.1",
