@@ -2,7 +2,8 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-import router from './router'
+// import router from './router'
+import {router,routes} from './router'
 
 import axios from 'axios';
 
@@ -17,22 +18,10 @@ Vue.prototype.$echarts = echarts
 
 import '@/styles/index.scss'
 
-Vue.prototype.$axios = axios  
+Vue.prototype.$axios = axios
 
 Vue.config.productionTip = false
 Vue.use(ElementUI, { size: 'small', zIndex: 3000 })
-
-
-
-/* eslint-disable no-new */
-router.beforeEach((to, from, next) => {
-  /* 路由发生变化修改页面title */
-  if (to.meta.title) {
-    document.title = to.meta.title
-  }
-  next()
-})
-
 
 
 new Vue({
@@ -41,6 +30,9 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+// const app = new Vue({
+//   router
+// }).$mount('#app')
 // const host = process.env.NODE_ENV === "development" ? "" : "https://www.i3done.com";
 // const instance = axios.create({
 //     baseURL: host

@@ -5,18 +5,20 @@ export default {
     // 轮播函数
     swiperFun: function (name, height, speed) {
       return new Swiper(name, {
+        initialSlide: 0,
+        slidesPerView: 'auto',
+        // loopedSlides :12,
         speed: speed,//匀速时间
-        loop: true,
         autoplay: {
           delay: 0,
-          // stopOnLastSlide: false,
-          disableOnInteraction: true,
+          stopOnLastSlide: false,
+          disableOnInteraction: false
         },
         direction: 'vertical',
-        height: height,
         observer: true,
+        autoHeight:true,
         observeParents: true,
-        index: 0
+        loop: true,
       })
     },
     stopPlay: function (item) {

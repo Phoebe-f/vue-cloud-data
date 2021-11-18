@@ -50,6 +50,12 @@ export default {
       handler(val) {
         this.setOptions(val)
       }
+    },
+    geoJSON: {
+      deep: true,
+      handler(val) {
+        this.loadMap(val)
+      }
     }
   },
   mounted() {
@@ -57,9 +63,11 @@ export default {
       this.initChart()
       if (this.routeName == 'home' || this.routeName == "exampleSchool") {
         this.loadMap("china", "../../../static/china.json")
-      } else {
+      } else if (this.routeName == "Province") {
         // console.log(this.geoJSON)
         this.loadMap(this.geoJSON, `/list/CloudData/json/province/${this.geoJSON}.json`)
+      } else {
+        this.loadMap(this.geoJSON, `/list/CloudData/json/city/${this.geoJSON}.json`)
       }
     })
   },
@@ -72,49 +80,14 @@ export default {
   },
   methods: {
     initChart() {
-      var provinces = {
-        '上海': '../../../static/province/shanghai.json',
-        '河北': '../../../static/province/hebei.json',
-        '山西': '../../../static/province/shanxi.json',
-        '内蒙古': '.../../../static/province/neimenggu.json',
-        '辽宁': '../../../static/province/liaoning.json',
-        '吉林': '../../../static/province/jilin.json',
-        '黑龙江': '../../../static/province/heilongjiang.json',
-        '江苏': '../../../static/province/jiangsu.json',
-        '浙江': '../../../static/province/zhejiang.json',
-        '安徽': '../../../static/province/anhui.json',
-        '福建': '../../../static/province/fujian.json',
-        '江西': '../../../static/province/jiangxi.json',
-        '山东': '../../../static/province/shandong.json',
-        '河南': '../../../static/province/henan.json',
-        '湖北': '../../../static/province/hubei.json',
-        '湖南': '../../../static/province/hunan.json',
-        '广东': '../../../static/province/guangdong.json',
-        '广西': '../../../static/province/guangxi.json',
-        '海南': '../../../static/province/hainan.json',
-        '四川': '../../../static/province/sichuan.json',
-        '贵州': '../../../static/province/guizhou.json',
-        '云南': '../../../static/province/yunnan.json',
-        '西藏': '../../../static/province/xizang.json',
-        '陕西': '../../../static/province/shanxi1.json',
-        '甘肃': '../../../static/province/gansu.json',
-        '青海': '../../../static/province/qinghai.json',
-        '宁夏': '../../../static/province/ningxia.json',
-        '新疆': '../../../static/province/xinjiang.json',
-        '北京': '../../../static/province/beijing.json',
-        '天津': '../../../static/province/tianjin.json',
-        '重庆': '../../../static/province/chongqing.json',
-        '香港': '../../../static/province/xianggang.json',
-        '澳门': '../../../static/province/aomen.json',
-        '台湾': '../../../static/province/taiwan.json'
-      };
       var that = this
       this.chart = echarts.init(document.getElementById(this.id));
       setTimeout(function () {
         that.setOptions(that.chartData)
       }, 800)
       this.chart.on("click", (params) => {
-        this.$emit('clickMap', params)
+        console.log(params)
+        this.$emit('clickMap', params.data)
       })
       // this.setOptions(this.chartData)
     },

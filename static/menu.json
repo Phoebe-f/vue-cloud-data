@@ -36,15 +36,18 @@
 	"great": {
 		"1": {
 			"url": "./province.html?id=beijing",
-			"title": "北京市"
+			"title": "北京市",
+			"pinyin":"beijing"
 		},
 		"2": {
 			"url": "./province.html?id=guangdong",
-			"title": "广东省"
+			"title": "广东省",
+			"pinyin":"guangdong"
 		},
 		"3": {
 			"url": "./province.html?id=jiangsu",
-			"title": "江苏省"
+			"title": "江苏省",
+			"pinyin":"jiangsu"
 		},
 		"4": {
 			"url": "./province.html?id=shandong",

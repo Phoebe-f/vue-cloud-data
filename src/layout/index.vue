@@ -23,22 +23,19 @@
               <dd></dd>
             </dl>
             <ul class="menu-list" :class="{ active: meunChange == false }">
-              <li>
-                <a id="index" @click="title = '3D One 数据云图', meunChange = true">
-                  <router-link to="/home">3D One 数据云图</router-link>
-                </a>
-              </li>
-              <li>
-                <a id="schools" @click="title = '全国示范校', meunChange = true">
-                  <router-link to="/exampleSchool">全国示范校</router-link>
-                </a>
-              </li>
-              <li>
-                <a id="province" @click="dialogVisible = true, meunChange = true">各省数据云图</a>
+              <li v-for="menuItem,index in routes[0].children" :key="index">
+                <template v-if="menuItem.children == null">
+                  <a @click="meunChange = true">
+                    <router-link :to="menuItem.path" v-text="menuItem.meta.title"></router-link>
+                  </a>
+                </template>
+                <template v-else>
+                  <a @click="meunChange = true, dialogVisible = true" v-text="menuItem.meta.title"></a>
+                </template>
               </li>
             </ul>
           </div>
-          <a @click="location.reload()">
+          <a @click="refresh()">
             <div class="refresh fr">
               <img src="../assets/images/refresh.svg" />刷新
             </div>
@@ -47,6 +44,7 @@
       </div>
       <el-dialog :visible.sync="dialogVisible">
         <div class="province-list level_1 clearfix">
+          <!-- <router-link to="{`/region/province/${item.code}`}"/> -->
           <a
             v-for="(item,index) in schoolGreat"
             :key="index"
@@ -73,12 +71,12 @@
 </template>
 
 <script>
-// import test from '../../test/e2e/specs/test'
 import AppMain from './components/AppMain'
+import { router, routes } from '../router/index'
+import bus from '../assets/js/evnetBus.js'
 
 export default {
   name: 'Layout',
-  // props: ["title"],
   components: {
     AppMain
   },
@@ -90,28 +88,35 @@ export default {
       title: "3D One 数据云图",
       routeName: undefined,
       schoolGreat: [],
-      schoolNomal: []
+      schoolNomal: [],
+      routes: routes,
     }
   },
   watch: {
-    $route(route) {
-      // if you go to the redirect page, do not update the breadcrumbs
-      if (route.path.startsWith('/province/')) {
-        return
-      }
-      this.getBreadcrumb()
-    }
+    // $route(route) {
+    //   // if you go to the redirect page, do not update the breadcrumbs
+    //   if (route.path.startsWith('/province/')) {
+    //     return
+    //   }
+    //   // this.getBreadcrumb()
+    // }
   },
   created: function () {
+    bus.$on('add', (message) => {
+      this.title = message
+    })
     this.getMenu()
     this.getBreadcrumb()
     this.getTime();
     setInterval(this.getTime, 1000)
+    setTimeout(() => {
+      this.refresh()
+    }, 60000 * 15)
   },
   methods: {
     getMenu: function () {
       this.$axios.get('../../static/menu.json').
-        then((data) =>{
+        then((data) => {
           var data = data.data
           this.schoolGreat = this.handelSchoolList(data.great)
           this.schoolNomal = this.handelSchoolList(data.nomal)
@@ -124,14 +129,18 @@ export default {
       }
       return arr
     },
+
+    refresh: function () {
+      // this.$router.go(0)
+      location.reload()
+    },
     handelTitle: function (item) {
+      console.log(item)
       var url = item.url
       var params = url.indexOf("?")
       var _id = url.slice(params + 4)
-      this.title = item.title
-      document.title = item.title
       this.$router.push({
-        path: `/province/${_id}`,
+        path: `/region/province/${_id}`,
       })
     },
     getBreadcrumb() {

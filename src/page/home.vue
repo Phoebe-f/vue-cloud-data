@@ -389,6 +389,7 @@ import MapChart from '../components/mapChart/index'
 // import '../utils/china.js'
 
 import commMix from '../utils/commMix.js'
+import bus from '../assets/js/evnetBus.js'
 
 
 export default {
@@ -447,10 +448,10 @@ export default {
       province3: {},// 全国数据图--学校
       province4: {},//全国数据图--作品
       province5: {},//全国数据图--教师
-      province3Page: [],
+      province3Page: [],//分页数据
       province4Page: [],
       province5Page: [],
-      page3Params: {
+      page3Params: {//分页
         total: 3,
         pageSiz: 10,
         pageNo: 1
@@ -466,18 +467,16 @@ export default {
         pageNo: 1
       },
       routeName: '',//路由名
-
+      projectTitle: "3D One 数据云图"
     }
   },
   created() {
-
     this.getData()
     this.mapDataPage(this.province3Page, this.page3Params)
     this.routeName = this.$route.name
+    this.changeTitle()
   },
-  mounted() {
-
-  },
+  mounted() { },
   // 
   methods: {
     getData: function () {
@@ -512,19 +511,22 @@ export default {
             this.province4Page = data.province4
             this.province5Page = data.province5
             this.$nextTick(function () {//轮播
-              this.userSwiper = this.swiperFun('#swiper-container_3', 50, 1800)
+              this.userSwiper = this.swiperFun('#swiper-container_3', 70, 1800)
             })
           }
         })
     },
     //获取省份拼音
     getProId: function (params) {
-      var province = params.data.pinyin
-      if (province == 'taiwan' || province == 'xianggang' || province == 'aomen')
+      var { pinyin } = params
+      if (pinyin == 'taiwan' || pinyin == 'xianggang' || pinyin == 'aomen')
         return false;
       this.$router.push({
-        path: `province/${province}`,
+        path: `region/province/${pinyin}`,
       })
+    },
+    changeTitle: function () {
+      bus.$emit("add", this.projectTitle)
     },
     handelTotalUse: function (data) {
       var totalUse = 0;

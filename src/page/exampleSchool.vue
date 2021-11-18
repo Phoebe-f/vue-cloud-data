@@ -7,9 +7,7 @@
             <div class="inbox-top clearfix">
               <span class="tit">全国示范校</span>
               <div class="tab" id="school-num">
-                <em v-text="schoolTotal[0]"></em>
-                <em v-text="schoolTotal[1]"></em>
-                <em v-text="schoolTotal[2]"></em>
+                <em v-for="index in schoolTotal.length" :key="index" v-text="schoolTotal[index - 1]"></em>
               </div>
             </div>
             <div class="inbox-cont">
