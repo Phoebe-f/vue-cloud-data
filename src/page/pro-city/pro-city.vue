@@ -288,7 +288,11 @@
                     @mouseleave="startPlay(teacSwiper)"
                   >
                     <div class="swiper-wrapper">
-                      <div class="swiper-slide" v-for="(item) in teacCreater" :key="item.userid">
+                      <div
+                        class="swiper-slide"
+                        v-for="(item,index) in teacCreater"
+                        :key="item.userid"
+                      >
                         <div class="user-item">
                           <a class="user-avatar fl">
                             <img :src="item.avatar" :alt="item.nickname" />
@@ -304,7 +308,8 @@
                           <div class="line-time fr">
                             <ul>
                               <li>
-                                <span v-text="item.modelNum"></span>
+                                <!-- <span v-text="item.modelNum"></span> -->
+                                <span v-text="index"></span>
                                 <i>作品</i>
                               </li>
                               <li>
@@ -344,13 +349,11 @@
                   @mouseleave="startPlay(schoolSwiper)"
                 >
                   <div class="swiper-wrapper">
-                    <div
-                      class="swiper-slide"
-                      height="40px"
-                      v-for="(item,index) in module_2 == 0 ? schoolRank_num : schoolRank_good"
-                      :key="item.id"
-                    >
-                      <li>
+                    <div class="swiper-slide">
+                      <li
+                        v-for="(item,index) in module_2 == 0 ? schoolRank_num : schoolRank_good"
+                        :key="item.id"
+                      >
                         <span>
                           <font v-text="index + 1"></font>
                           <a>
@@ -453,11 +456,11 @@ export default {
       this.cityChart1.code = this.$route.params.id
       this.cityChart2.code = this.$route.params.id
       this.userChart.code = this.$route.params.id
+
     } else {
       this.proPY = this.$route.params.code
       this.getCityData(this.proPY)
       this.getCityName(this.proPY)
-
     }
     // window.location.reload();
     // if (this.isProvince) {
@@ -484,45 +487,44 @@ export default {
   },
   methods: {
     getData: function () {
-      var that = this
-      this.$axios.get('../../../static/province.json').then(function (data) {
+      this.$axios.get('../../../static/province.json').then((data) => {
         var data = data.data
-        var province = data[that.proPY]
+        var province = data[this.proPY]
         var provinceId = province.id
         document.title = province.name
-        that.projectTitle = province.name
-        that.$axios.get("/list/api.php?m=DataCloud&a=getProvinceCloudData", { params: { pid: provinceId } })
-          .then(function (data) {
+        this.projectTitle = province.name
+        this.$axios.get("/list/api.php?m=DataCloud&a=getProvinceCloudData", { params: { pid: provinceId } })
+          .then((data) => {
             if (data.status) {
               var data = data.data
-              that.schoolNum = data.schoolCount
-              that.useNum = data.memberCount
-              that.worksNum = data.modelCount
-              that.courseData = data.courseData
-              that.threeBarData = that.handleThreeBarData(data.courseData)
-              that.modelData1 = data.modelData1
-              that.modelData2 = data.modelData2
-              that.cityChart1 = that.handleCityChart(data.modelData1.cityChart)
-              that.cityChart2 = that.handleCityChart(data.modelData2.cityChart)
-              that.teacCreater = data.tutorList
-              that.schoolRank_num = data.schoolRankList6
-              that.schoolRank_good = data.schoolRankList5
-              that.memberRankList3 = data.memberRankList3
-              that.memberRankList4 = data.memberRankList4
-              that.userChart = that.handleUserChart(data.userChart)
-              that.userChart.xchange = true
-              that.lists = data.lists
-              data.lists.forEach(function (item, i) {
-                that.schoolData.push({
+              this.schoolNum = data.schoolCount
+              this.useNum = data.memberCount
+              this.worksNum = data.modelCount
+              this.courseData = data.courseData
+              this.threeBarData = this.handleThreeBarData(data.courseData)
+              this.modelData1 = data.modelData1
+              this.modelData2 = data.modelData2
+              this.cityChart1 = this.handleCityChart(data.modelData1.cityChart)
+              this.cityChart2 = this.handleCityChart(data.modelData2.cityChart)
+              this.teacCreater = data.tutorList
+              this.schoolRank_num = data.schoolRankList6
+              this.schoolRank_good = data.schoolRankList5
+              this.memberRankList3 = data.memberRankList3
+              this.memberRankList4 = data.memberRankList4
+              this.userChart = this.handleUserChart(data.userChart)
+              this.userChart.xchange = true
+              this.lists = data.lists
+              data.lists.forEach((item, i) => {
+                this.schoolData.push({
                   name: item.name,
                   value: parseInt(item.total),
                   url: item.url
                 })
               })
-              that.handelCityMapData(that.schoolData)
-              that.$nextTick(function () {//两个轮播
-                that.teacSwiper = that.swiperFun("#swiper-container_1", 40, 2000)
-                that.schoolSwiper = that.swiperFun("#swiper-container_2", 40, 1000)
+              this.handelCityMapData(this.schoolData)
+              this.$nextTick(() => {//两个轮播
+                this.teacSwiper = this.swiperFun("#swiper-container_1", 40, 1000)
+                this.schoolSwiper = this.swiperFun("#swiper-container_2", 40, 30000)
               })
             }
           })
@@ -562,7 +564,7 @@ export default {
             that.handelCityMapData(that.schoolData)
             that.$nextTick(function () {//两个轮播
               that.teacSwiper = that.swiperFun("#swiper-container_1", 70, 1800)
-              that.schoolSwiper = that.swiperFun("#swiper-container_2", 40, 1800)
+              that.schoolSwiper = that.swiperFun("#swiper-container_2", 40, 30000)
             })
           }
         })
@@ -590,9 +592,12 @@ export default {
         this.$router.push({
           path: `/region/city/${cityCode}`,
         })
-      } else {
-        this.$router.push({
-          path: `/region/area`,
+      } else if(this.routeName == "City") {
+        console.log(params)
+        var areaCode = params.url.slice(params.url.indexOf("?") + 6)
+        console.log(areaCode)
+         this.$router.push({
+           path: `/region/county`,
         })
 
       }

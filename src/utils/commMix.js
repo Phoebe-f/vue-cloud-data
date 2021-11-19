@@ -7,7 +7,6 @@ export default {
       return new Swiper(name, {
         initialSlide: 0,
         slidesPerView: 'auto',
-        // loopedSlides :12,
         speed: speed,//匀速时间
         autoplay: {
           delay: 0,
@@ -15,10 +14,12 @@ export default {
           disableOnInteraction: false
         },
         direction: 'vertical',
+        autoHeight: true,
+        height: height,
         observer: true,
-        autoHeight:true,
         observeParents: true,
         loop: true,
+        spaceBetween:1,
       })
     },
     stopPlay: function (item) {

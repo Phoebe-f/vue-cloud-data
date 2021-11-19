@@ -23,15 +23,15 @@
               <dd></dd>
             </dl>
             <ul class="menu-list" :class="{ active: meunChange == false }">
-              <li v-for="menuItem,index in routes[0].children" :key="index">
-                <template v-if="menuItem.children == null">
+              <li v-for="menuItem,index in routes" :key="index">
+                <!-- <template v-if="menuItem.children == null"> -->
                   <a @click="meunChange = true">
-                    <router-link :to="menuItem.path" v-text="menuItem.meta.title"></router-link>
+                    <router-link :to="menuItem.path" v-text="menuItem.path"></router-link>
                   </a>
-                </template>
-                <template v-else>
+                <!-- </template> -->
+                <!-- <template v-else>
                   <a @click="meunChange = true, dialogVisible = true" v-text="menuItem.meta.title"></a>
-                </template>
+                </template> -->
               </li>
             </ul>
           </div>
@@ -90,6 +90,8 @@ export default {
       schoolGreat: [],
       schoolNomal: [],
       routes: routes,
+      routes2: routes,
+
     }
   },
   watch: {
@@ -102,6 +104,8 @@ export default {
     // }
   },
   created: function () {
+    console.log(this.permissionRoutes)
+    this.routes2 = this.permissionRoutes.filter(r => !r.hidden)
     bus.$on('add', (message) => {
       this.title = message
     })

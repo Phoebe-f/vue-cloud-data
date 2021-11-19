@@ -372,11 +372,6 @@
 </template>
 
 <script>
-window._mapData = {
-  province: "china",
-  proNameZh: "中国",
-  proJson: "../../../static/china.json",
-}
 import * as echarts from 'echarts'
 
 import BarChart from '../components/verticalBar/index'
