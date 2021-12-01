@@ -1,3 +1,4 @@
+// import { cosh } from 'core-js/core/number';
 import Swiper from 'swiper';
 
 export default {
@@ -6,7 +7,8 @@ export default {
     swiperFun: function (name, height, speed) {
       return new Swiper(name, {
         initialSlide: 0,
-        slidesPerView: 'auto',
+        slidesPerView: "auto",
+        // loopedSlides:16,
         speed: speed,//匀速时间
         autoplay: {
           delay: 0,

@@ -7,7 +7,11 @@
             <div class="inbox-top clearfix">
               <span class="tit">全国示范校</span>
               <div class="tab" id="school-num">
-                <em v-for="index in schoolTotal.length" :key="index" v-text="schoolTotal[index - 1]"></em>
+                <em
+                  v-for="index in schoolTotal.length"
+                  :key="index"
+                  v-text="schoolTotal[index - 1]"
+                ></em>
               </div>
             </div>
             <div class="inbox-cont">
@@ -71,14 +75,15 @@
               </div>
             </template>
           </div>
-          <div class="page">
+          <page-con @prev="prevBTN()" @next="nextBTN()" :prevPageState="prevPage" :nextPageState="nextPage"></page-con>
+          <!-- <div class="page">
             <a class="prev" :class="{ disabled: prevPage == 0 }" @click="prevPageClick">
               <img src="../assets/images/preve.png" title="上一页" />
             </a>
             <a class="next" :class="{ disabled: nextPage == 0 }" @click="nextPageClick">
               <img src="../assets/images/next.png" title="下一页" />
             </a>
-          </div>
+          </div>-->
         </div>
       </div>
     </div>
@@ -88,14 +93,21 @@
 
 import * as echarts from 'echarts'
 import MapChart from '../components/mapChart/index'
+import pageCon from '../components/page/index.vue'
+
+
+import bus from '../assets/js/evnetBus'
+
+
 
 export default {
   components: {
-    MapChart
+    MapChart,
+    pageCon
   },
   data() {
     return {
-      title: { "name": "全国示范校" },
+      // title: { "name": "全国示范校" },
       // mapName:"china",
       routeName: '',
       proId: '',
@@ -106,12 +118,13 @@ export default {
       schools: [],
       provinceData: [],
       provinceMapData: {},
-
+      projectTitle: "全国示范校"
     }
   },
   created() {
     this.getData()
     this.routeName = this.$route.name
+    this.changeTitle()
   },
   methods: {
     getData: function () {
@@ -142,17 +155,20 @@ export default {
           }
         })
     },
+    changeTitle: function () {
+      bus.$emit("add", this.projectTitle)
+    },
     // 获取省份id
     getProId: function (params) {
-      this.proId = params.data.pid
-      this.page = 0
+      this.proId = params.pid
+      this.page = 1
       this.getProListData(this.proId, this.page)
     },
-    prevPageClick: function () {
+    prevBTN: function () {
       this.page--
       this.getProListData(this.proId, this.page)
     },
-    nextPageClick: function () {
+    nextBTN: function () {
       this.page++
       this.getProListData(this.proId, this.page)
     },
@@ -215,6 +231,44 @@ export default {
   margin-right: 10px;
   border-radius: 50%;
 }
+/* .main .school-wrap .page {
+  text-align: center;
+}
+.main .school-wrap .page a {
+  display: inline-block;
+  width: 80px;
+  height: 68px;
+  line-height: 68px;
+  text-align: center;
+  border-radius: 8px;
+  background-color: #2b2d3c;
+  box-shadow: 0 0 50px 0px #18191e;
+}
+.main .school-wrap .page a:first-child {
+  margin-right: 28px;
+}
+.main .school-wrap .page img {
+  width: 48px;
+  height: 48px;
+} */
+
+/* 示范校牌匾 */
+.center-wrapper .map-subox .inbox-cont {
+  position: relative;
+}
+.center-wrapper .map-subox .inbox-cont .aw-conbox {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -140px;
+}
+.center-wrapper .map-subox .inbox-cont .aw-conbox img {
+  display: block;
+  width: 280px;
+  height: 175px;
+}
+</style>
+<style>
 .main .school-wrap .page {
   text-align: center;
 }
@@ -234,21 +288,5 @@ export default {
 .main .school-wrap .page img {
   width: 48px;
   height: 48px;
-}
-
-/* 示范校牌匾 */
-.center-wrapper .map-subox .inbox-cont {
-  position: relative;
-}
-.center-wrapper .map-subox .inbox-cont .aw-conbox {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  margin-left: -140px;
-}
-.center-wrapper .map-subox .inbox-cont .aw-conbox img {
-  display: block;
-  width: 280px;
-  height: 175px;
 }
 </style>

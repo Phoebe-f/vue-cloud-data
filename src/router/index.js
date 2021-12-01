@@ -20,18 +20,25 @@ const routes = [
         component: home,
         meta: { title: '3D One 数据云图' }
       },
-
     ]
   },
   {
-    path: '/exampleSchool',
-    name: 'exampleSchool',
-    component: exampleSchool,
-    meta: { title: '全国示范校' }
+    path: '/example',
+    component: () => import('@/layout'),
+    redirect: '/exampleSchool',
+    children: [
+      {
+        path: '/exampleSchool',
+        name: 'exampleSchool',
+        component: () => import('../page/exampleSchool.vue'),
+        meta: { title: '全国示范校' }
+      }
+    ]
   },
   {
     path: '/region',
-    meta: { title: '各省数据' },
+    name:"region",
+    meta: { title: '各省数据云图' },
     component: () => import('@/layout'),
     children: [
       {

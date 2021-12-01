@@ -1,25 +1,65 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import getters from './getters'
+import { routes } from '../router/index'
 
 Vue.use(Vuex)
 
-// https://webpack.js.org/guides/dependency-management/#requirecontext
-const modulesFiles = require.context('./modules', true, /\.js$/)
 
-// you do not need `import app from './modules/app'`
-// it will auto require all vuex module from modules file
-const modules = modulesFiles.keys().reduce((modules, modulePath) => {
-  // set './app.js' => 'app'
-  const moduleName = modulePath.replace(/^\.\/(.*)\.\w+$/, '$1')
-  const value = modulesFiles(modulePath)
-  modules[moduleName] = value.default
-  return modules
-}, {})
+export function filterAsyncRoutes(routes, roles) {
+  const res = []
+
+  routes.forEach(route => {
+    const tmp = { ...route }
+    // if (hasPermission(roles, tmp)) {
+    if (tmp.children) {
+      tmp.children = filterAsyncRoutes(tmp.children, roles)
+    }
+    res.push(tmp)
+    // }
+  })
+
+  return res
+}
+
 
 const store = new Vuex.Store({
-  modules,
-  getters
+  state: {
+    routes,
+    queryID: 'hhh',
+  },
+
+  getters: {
+    permission_routes: state => state.routes.filter((i) => i.hiddren != true)
+  },
+
+  mutations: {
+    SET_ROUTES: (state, routes) => {
+      state.addRoutes = routes
+      state.routes = constantRoutes.concat(routes)
+    },
+    changeQueryID: (state, queryPar)=>{
+      state.queryID = queryPar
+    }
+  },
+
+  actions: {//异步
+    generateRoutes({ commit }, roles) {
+      return new Promise(resolve => {
+        let accessedRoutes
+        if (roles.includes('admin')) {
+          accessedRoutes = asyncRoutes || []
+        } else {
+          accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+        }
+        commit('SET_ROUTES', accessedRoutes)
+        resolve(accessedRoutes)
+      })
+    }
+  }
 })
 
 export default store
+
+// console.log("route")
+// console.log(store.state)
+// console.log("route")

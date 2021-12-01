@@ -1,5 +1,4 @@
 <template>
-  <!-- <app-header :title="title"></app-header> -->
   <div class="main">
     <div class="main-inner clearfix">
       <div class="left-wrapper fl">
@@ -127,14 +126,18 @@
                     </i>
                   </li>
                 </ul>
-                <div class="page">
+                <page-con
+                  @prev="prevBTN(province3Page, page3Params)"
+                  @next="nextBTN(province3Page, page3Params)"
+                ></page-con>
+                <!-- <div class="page">
                   <a class="prev" @click="prevPage(province3Page, page3Params)">
                     <img src="../assets/images/preve.png" title="上一页" />
                   </a>
                   <a class="next" @click="nextPage(province3Page, page3Params)">
                     <img src="../assets/images/next.png" title="下一页" />
                   </a>
-                </div>
+                </div>-->
               </div>
             </template>
             <template v-else-if="mapChange == 1">
@@ -155,14 +158,18 @@
                     </i>
                   </li>
                 </ul>
-                <div class="page">
+                <page-con
+                  @prev="prevBTN(province4Page, page4Params)"
+                  @next="nextBTN(province4Page, page4Params)"
+                ></page-con>
+                <!-- <div class="page">
                   <a class="prev" @click="prevPage(province4Page, page4Params)">
                     <img src="../assets/images/preve.png" title="上一页" />
                   </a>
                   <a class="next" @click="nextPage(province4Page, page4Params)">
                     <img src="../assets/images/next.png" title="下一页" />
                   </a>
-                </div>
+                </div>-->
               </div>
             </template>
             <template v-else-if="mapChange == 2">
@@ -183,14 +190,18 @@
                     </i>
                   </li>
                 </ul>
-                <div class="page">
+                <page-con
+                  @prev="prevBTN(province5Page, page5Params)"
+                  @next="nextBTN(province5Page, page5Params)"
+                ></page-con>
+                <!-- <div class="page">
                   <a class="prev" @click="prevPage(province5Page, page5Params)">
                     <img src="../assets/images/preve.png" title="上一页" />
                   </a>
                   <a class="next" @click="nextPage(province5Page, page5Params)">
                     <img src="../assets/images/next.png" title="下一页" />
                   </a>
-                </div>
+                </div>-->
               </div>
             </template>
           </div>
@@ -275,10 +286,16 @@
                 3D 作品
                 <i id="total-model">2451780</i>
               </span>
-              <div id="tab2" class="tab">
+              <tab-change
+                :tabTxt="['总', '月']"
+                :tabState="total_mon"
+                @tabState_0="tabState_0"
+                @tabState_1="tabState_1"
+              ></tab-change>
+              <!-- <div id="tab2" class="tab">
                 <i :class="{ on: total_mon == 0 }" @click="total_mon = 0">总</i>
                 <i :class="{ on: total_mon == 1 }" @click="total_mon = 1">月</i>
-              </div>
+              </div>-->
             </div>
             <div class="inbox-cont model-line-cont">
               <div class="model-line-chart">
@@ -381,10 +398,14 @@ import ThreeBar from '../components/threeBar/threeBar'
 import PieBottom from '../components/pieChart/pieChart_1'
 import PieTop from '../components/pieChart/pieChart_2'
 import MapChart from '../components/mapChart/index'
+import pageCon from '../components/page/index.vue'
+import TabChange from '../components/tabChange/index.vue'
 // import '../utils/china.js'
 
 import commMix from '../utils/commMix.js'
 import bus from '../assets/js/evnetBus.js'
+
+import { mapState } from 'vuex'
 
 
 export default {
@@ -398,7 +419,9 @@ export default {
     // MultiLine,
     PieBottom,
     PieTop,
-    MapChart
+    MapChart,
+    pageCon,
+    TabChange
   },
   data() {
     return {
@@ -462,7 +485,7 @@ export default {
         pageNo: 1
       },
       routeName: '',//路由名
-      projectTitle: "3D One 数据云图"
+      projectTitle: "3D One 数据云图",
     }
   },
   created() {
@@ -472,6 +495,11 @@ export default {
     this.changeTitle()
   },
   mounted() { },
+  computed: {
+    ...mapState({
+      queryID: "queryID"
+    })
+  },
   // 
   methods: {
     getData: function () {
@@ -612,17 +640,35 @@ export default {
       return pageList
     },
     // 分页按键
-    nextPage: function (data, page) {
+    prevBTN: function (data, page) {
+      if (page.pageNo > 1) {
+        page.pageNo--
+        this.mapDataPage(data, page)
+      }
+    },
+    nextBTN: function (data, page) {
       if (page.pageNo <= page.total) {
         page.pageNo++
         this.mapDataPage(data, page)
       }
     },
-    prevPage: function (data, page) {
-      if (page.pageNo > 1) {
-        page.pageNo--
-        this.mapDataPage(data, page)
-      }
+    // nextPage: function (data, page) {
+    //   if (page.pageNo <= page.total) {
+    //     page.pageNo++
+    //     this.mapDataPage(data, page)
+    //   }
+    // },
+    // prevPage: function (data, page) {
+    //   if (page.pageNo > 1) {
+    //     page.pageNo--
+    //     this.mapDataPage(data, page)
+    //   }
+    // },
+    tabState_0: function () {
+      this.total_mon = 0
+    },
+    tabState_1: function () {
+      this.total_mon = 1
     },
   }
 }

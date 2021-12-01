@@ -9,10 +9,16 @@
                 3D 作品
                 <i id="week-model" v-text="modelData1.total"></i>
               </span>
-              <div id="tab1" class="tab">
+              <tab-change
+                :tabTxt="['总', '月']"
+                :tabState="total_mon"
+                @tabState_0="tabState1_0"
+                @tabState_1="tabState1_1"
+              ></tab-change>
+              <!-- <div id="tab1" class="tab">
                 <i :class="{ on: total_mon == 0 }" @click="total_mon = 0">总</i>
                 <i :class="{ on: total_mon == 1 }" @click="total_mon = 1">月</i>
-              </div>
+              </div>-->
             </div>
             <div class="inbox-cont city-model-line-cont">
               <line-chart
@@ -335,10 +341,16 @@
           <div class="main-inbox">
             <div class="inbox-top clearfix">
               <span class="tit">学校排行榜</span>
-              <div id="tab3" class="tab" data-type="3">
+              <tab-change
+                :tabTxt="['数量', '优秀']"
+                :tabState="module_2"
+                @tabState_0="tabState_0"
+                @tabState_1="tabState_1"
+              ></tab-change>
+              <!-- <div id="tab3" class="tab" data-type="3">
                 <i :class="{ on: module_2 == 0 }" @click="module_2 = 0">数量</i>
                 <i :class="{ on: module_2 == 1 }" @click="module_2 = 1">优秀</i>
-              </div>
+              </div>-->
             </div>
             <div class="inbox-cont work-list-cont">
               <div class="data-list work-data-list">
@@ -349,12 +361,14 @@
                   @mouseleave="startPlay(schoolSwiper)"
                 >
                   <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                      <li
-                        v-for="(item,index) in module_2 == 0 ? schoolRank_num : schoolRank_good"
-                        :key="item.id"
-                      >
-                        <span>
+                    <div
+                      class="swiper-slide"
+                      v-for="(item,index) in module_2 == 0 ? schoolRank_num : schoolRank_good"
+                      :key="index"
+                    >
+                      <li>
+                        {{ index }}
+                        <!-- <span>
                           <font v-text="index + 1"></font>
                           <a>
                             <img :src="item.thumb" :alt="item.title" v-cloak />
@@ -363,7 +377,7 @@
                         </span>
                         <i>
                           <em v-text="item.total"></em>
-                        </i>
+                        </i>-->
                       </li>
                     </div>
                   </div>
@@ -383,10 +397,12 @@ import LineChart from '../../components/lineChart/index'
 import BarChart from '../../components/verticalBar/index'
 import ThreeBar from '../../components/threeBar/threeBar'
 import MapChart from '../../components/mapChart/index'
+import TabChange from '../../components/tabChange/index.vue'
 
 import commMix from '../../utils/commMix.js'
 
 import bus from '../../assets/js/evnetBus.js'
+import { mapState } from 'vuex'
 
 export default {
   name: "pro-city",
@@ -395,7 +411,8 @@ export default {
     LineChart,
     BarChart,
     ThreeBar,
-    MapChart
+    MapChart,
+    TabChange
   },
   props: {
     isProvince: {
@@ -449,6 +466,7 @@ export default {
   },
   mounted() { },
   created() {
+
     this.routeName = this.$route.name
     if (this.routeName == 'Province') {
       this.getData(this.proPY)
@@ -456,7 +474,6 @@ export default {
       this.cityChart1.code = this.$route.params.id
       this.cityChart2.code = this.$route.params.id
       this.userChart.code = this.$route.params.id
-
     } else {
       this.proPY = this.$route.params.code
       this.getCityData(this.proPY)
@@ -479,6 +496,9 @@ export default {
     // if (this.projectTitle) {
     //   this.changeTitle()
     // }
+  },
+  computed: {
+
   },
   watch: {
     projectTitle(val) {
@@ -523,8 +543,8 @@ export default {
               })
               this.handelCityMapData(this.schoolData)
               this.$nextTick(() => {//两个轮播
-                this.teacSwiper = this.swiperFun("#swiper-container_1", 40, 1000)
-                this.schoolSwiper = this.swiperFun("#swiper-container_2", 40, 30000)
+                this.teacSwiper = this.swiperFun("#swiper-container_1", 40, 1500)
+                this.schoolSwiper = this.swiperFun("#swiper-container_2", 40, 800)
               })
             }
           })
@@ -592,12 +612,12 @@ export default {
         this.$router.push({
           path: `/region/city/${cityCode}`,
         })
-      } else if(this.routeName == "City") {
+      } else if (this.routeName == "City") {
         console.log(params)
         var areaCode = params.url.slice(params.url.indexOf("?") + 6)
         console.log(areaCode)
-         this.$router.push({
-           path: `/region/county`,
+        this.$router.push({
+          path: `/region/county`,
         })
 
       }
@@ -680,6 +700,18 @@ export default {
       this.dataCityMap.provinceMapData = cityMapData
       this.dataCityMap.valueList = valueList
       this.dataCityMap.code = ""
+    },
+    tabState_0: function () {
+      this.module_2 = 0
+    },
+    tabState_1: function () {
+      this.module_2 = 1
+    },
+    tabState1_0: function () {
+      this.total_mon = 0
+    },
+    tabState1_1: function () {
+      this.total_mon = 1
     },
   }
 }

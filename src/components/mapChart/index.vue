@@ -86,10 +86,8 @@ export default {
         that.setOptions(that.chartData)
       }, 800)
       this.chart.on("click", (params) => {
-        console.log(params)
         this.$emit('clickMap', params.data)
       })
-      // this.setOptions(this.chartData)
     },
     loadMap: function (name, dataJson) {
       this.$axios.get(dataJson).then(function (res) {
