@@ -5,6 +5,7 @@
 <script>
 
 import * as echarts from 'echarts'
+import service from '../../utils/request'
 // import '../../utils/china.js'
 
 export default {
@@ -80,18 +81,21 @@ export default {
   },
   methods: {
     initChart() {
-      var that = this
       this.chart = echarts.init(document.getElementById(this.id));
-      setTimeout(function () {
-        that.setOptions(that.chartData)
-      }, 800)
+      setTimeout(() => {
+        this.setOptions(this.chartData)
+      }, 1000)
       this.chart.on("click", (params) => {
         this.$emit('clickMap', params.data)
       })
     },
     loadMap: function (name, dataJson) {
-      this.$axios.get(dataJson).then(function (res) {
-        var data = res.data
+      // this.$axios.get(dataJson).then(function (res) {
+      service({
+        url: dataJson
+      }).then(function (res) {
+        var data = res
+        // var data = res.data
         echarts.registerMap(name, data)
       })
     },

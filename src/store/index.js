@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { routes } from '../router/index'
+const routes = require('../router/index').routes
+
+
 
 Vue.use(Vuex)
 
@@ -24,7 +26,7 @@ export function filterAsyncRoutes(routes, roles) {
 
 const store = new Vuex.Store({
   state: {
-    routes,
+    routes: routes,
     queryID: 'hhh',
   },
 
@@ -37,7 +39,7 @@ const store = new Vuex.Store({
       state.addRoutes = routes
       state.routes = constantRoutes.concat(routes)
     },
-    changeQueryID: (state, queryPar)=>{
+    changeQueryID: (state, queryPar) => {
       state.queryID = queryPar
     }
   },
@@ -59,7 +61,3 @@ const store = new Vuex.Store({
 })
 
 export default store
-
-// console.log("route")
-// console.log(store.state)
-// console.log("route")

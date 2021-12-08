@@ -75,7 +75,12 @@
               </div>
             </template>
           </div>
-          <page-con @prev="prevBTN()" @next="nextBTN()" :prevPageState="prevPage" :nextPageState="nextPage"></page-con>
+          <page-con
+            @prev="prevBTN()"
+            @next="nextBTN()"
+            :prevPageState="prevPage"
+            :nextPageState="nextPage"
+          ></page-con>
           <!-- <div class="page">
             <a class="prev" :class="{ disabled: prevPage == 0 }" @click="prevPageClick">
               <img src="../assets/images/preve.png" title="上一页" />
@@ -93,10 +98,11 @@
 
 import * as echarts from 'echarts'
 import MapChart from '../components/mapChart/index'
-import pageCon from '../components/page/index.vue'
+import pageCon from '../components/pageChange/index.vue'
 
 
 import bus from '../assets/js/evnetBus'
+import service from '../utils/request'
 
 
 
@@ -107,8 +113,6 @@ export default {
   },
   data() {
     return {
-      // title: { "name": "全国示范校" },
-      // mapName:"china",
       routeName: '',
       proId: '',
       page: 1,
@@ -129,11 +133,11 @@ export default {
   methods: {
     getData: function () {
       // https://www.i3done.com/api.php?m=DataCloud&a=getSchoolCloudData
-      this.$axios.get("/list/api.php?m=DataCloud&a=getSchoolCloudData")
+      // this.$axios.get("/list/api.php?m=DataCloud&a=getSchoolCloudData")
+      service({ url: "/list/api.php?m=DataCloud&a=getSchoolCloudData" })
         .then((data) => {
-          console.log("example")
           if (data.status) {
-            var data = data.data
+            // var data = data.data
             this.prevPage = data.prevPage
             this.nextPage = data.nextPage
             this.schoolTotal = data.schoolNum
@@ -145,14 +149,19 @@ export default {
     },
     // 获取省份id -- 切换列表
     getProListData: function (id, page) {
-      this.$axios.get("/list/api.php?m=DataCloud&a=getSchoolCloudData", { params: { pid: id, page: page } })
+      service({
+        url: "/list/api.php?m=DataCloud&a=getSchoolCloudData&pid=" + id + "&page=" + page
+        //  }, { params: { pid: id, page: page } 
+      })
         .then((data) => {
           if (data.status) {
-            var data = data.data
+            // var data = data.data
             this.prevPage = data.prevPage
             this.nextPage = data.nextPage
             this.schools = data.schools
           }
+        }).catch((err) => {
+          console.log(err)
         })
     },
     changeTitle: function () {
@@ -231,26 +240,6 @@ export default {
   margin-right: 10px;
   border-radius: 50%;
 }
-/* .main .school-wrap .page {
-  text-align: center;
-}
-.main .school-wrap .page a {
-  display: inline-block;
-  width: 80px;
-  height: 68px;
-  line-height: 68px;
-  text-align: center;
-  border-radius: 8px;
-  background-color: #2b2d3c;
-  box-shadow: 0 0 50px 0px #18191e;
-}
-.main .school-wrap .page a:first-child {
-  margin-right: 28px;
-}
-.main .school-wrap .page img {
-  width: 48px;
-  height: 48px;
-} */
 
 /* 示范校牌匾 */
 .center-wrapper .map-subox .inbox-cont {

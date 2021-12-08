@@ -354,7 +354,31 @@
             </div>
             <div class="inbox-cont work-list-cont">
               <div class="data-list work-data-list">
-                <div
+                <vue-seamless-scroll
+                  :data="schoolRank_num"
+                  class="seamless-warp"
+                  :class-option="defaultOption"
+                >
+                  <div
+                    class
+                    v-for="(item,index) in module_2 == 0 ? schoolRank_num : schoolRank_good"
+                    :key="index"
+                  >
+                    <li>
+                      <span>
+                        <font v-text="index + 1"></font>
+                        <a>
+                          <img :src="item.thumb" :alt="item.title" v-cloak />
+                          {{ item.title }}
+                        </a>
+                      </span>
+                      <i>
+                        <em v-text="item.total"></em>
+                      </i>
+                    </li>
+                  </div>
+                </vue-seamless-scroll>
+                <!-- <div
                   class="swiper-container"
                   id="swiper-container_2"
                   @mouseenter="stopPlay(schoolSwiper)"
@@ -368,7 +392,7 @@
                     >
                       <li>
                         {{ index }}
-                        <!-- <span>
+                        <span>
                           <font v-text="index + 1"></font>
                           <a>
                             <img :src="item.thumb" :alt="item.title" v-cloak />
@@ -377,11 +401,11 @@
                         </span>
                         <i>
                           <em v-text="item.total"></em>
-                        </i>-->
+                        </i>
                       </li>
                     </div>
                   </div>
-                </div>
+                </div>-->
               </div>
             </div>
           </div>
@@ -402,7 +426,8 @@ import TabChange from '../../components/tabChange/index.vue'
 import commMix from '../../utils/commMix.js'
 
 import bus from '../../assets/js/evnetBus.js'
-import { mapState } from 'vuex'
+
+import service from '../../utils/request'
 
 export default {
   name: "pro-city",
@@ -498,7 +523,18 @@ export default {
     // }
   },
   computed: {
-
+    defaultOption() {
+      return {
+        step: 0.6, // 数值越大速度滚动越快
+        limitMoveNum: 2, // 开始无缝滚动的数据量 this.dataList.length
+        hoverStop: true, // 是否开启鼠标悬停stop
+        direction: 1, // 0向下 1向上 2向左 3向右
+        openWatch: true, // 开启数据实时监控刷新dom
+        singleHeight: 0, // 单步运动停止的高度(默认值0是无缝不停止的滚动) direction => 0/1
+        singleWidth: 0, // 单步运动停止的宽度(默认值0是无缝不停止的滚动) direction => 2/3
+        waitTime: 1000 // 单步运动停止的时间(默认值1000ms)
+      }
+    }
   },
   watch: {
     projectTitle(val) {
@@ -507,213 +543,231 @@ export default {
   },
   methods: {
     getData: function () {
-      this.$axios.get('../../../static/province.json').then((data) => {
-        var data = data.data
+      // this.$axios.get('../../../static/province.json').then((data) => {
+      service({ url: '../../../static/province.json' }).then((data) => {
+        // var data = data.data
+        // console.log(data)
         var province = data[this.proPY]
         var provinceId = province.id
         document.title = province.name
         this.projectTitle = province.name
-        this.$axios.get("/list/api.php?m=DataCloud&a=getProvinceCloudData", { params: { pid: provinceId } })
-          .then((data) => {
-            if (data.status) {
-              var data = data.data
-              this.schoolNum = data.schoolCount
-              this.useNum = data.memberCount
-              this.worksNum = data.modelCount
-              this.courseData = data.courseData
-              this.threeBarData = this.handleThreeBarData(data.courseData)
-              this.modelData1 = data.modelData1
-              this.modelData2 = data.modelData2
-              this.cityChart1 = this.handleCityChart(data.modelData1.cityChart)
-              this.cityChart2 = this.handleCityChart(data.modelData2.cityChart)
-              this.teacCreater = data.tutorList
-              this.schoolRank_num = data.schoolRankList6
-              this.schoolRank_good = data.schoolRankList5
-              this.memberRankList3 = data.memberRankList3
-              this.memberRankList4 = data.memberRankList4
-              this.userChart = this.handleUserChart(data.userChart)
-              this.userChart.xchange = true
-              this.lists = data.lists
-              data.lists.forEach((item, i) => {
-                this.schoolData.push({
-                  name: item.name,
-                  value: parseInt(item.total),
-                  url: item.url
-                })
-              })
-              this.handelCityMapData(this.schoolData)
-              this.$nextTick(() => {//两个轮播
-                this.teacSwiper = this.swiperFun("#swiper-container_1", 40, 1500)
-                this.schoolSwiper = this.swiperFun("#swiper-container_2", 40, 800)
-              })
-            }
-          })
-      })
-    },
-    getCityData: function (cityid) {
-      var that = this
-      // this.$axios.get('../../static/province.json').then(function (data) {
-      that.$axios.get("/list/api.php?m=DataCloud&a=getCityCloudData&pid=", { params: { pid: cityid } })
-        .then(function (data) {
+        // this.$axios.get("/list/api.php?m=DataCloud&a=getProvinceCloudData", { params: { pid: provinceId } })
+        service({
+          url: "/list/api.php?m=DataCloud&a=getProvinceCloudData&pid="+provinceId,
+        })
+        .then((data) => {
           if (data.status) {
-            var data = data.data
-            that.schoolNum = data.schoolCount
-            that.useNum = data.memberCount
-            that.worksNum = data.modelCount
-            that.courseData = data.courseData
-            that.threeBarData = that.handleThreeBarData(data.courseData)
-            that.modelData1 = data.modelData1
-            that.modelData2 = data.modelData2
-            // that.cityChart1 = that.handleCityChart(data.modelData1.cityChart)
-            // that.cityChart2 = that.handleCityChart(data.modelData2.cityChart)
-            that.teacCreater = data.tutorList
-            that.schoolRank_num = data.schoolRankList6
-            that.schoolRank_good = data.schoolRankList5
-            that.memberRankList3 = data.memberRankList3
-            that.memberRankList4 = data.memberRankList4
-            that.userChart = that.handleUserChart(data.userChart)
-            that.userChart.xchange = true
-            that.lists = data.lists
-            data.lists.forEach(function (item, i) {
-              that.schoolData.push({
+            // var data = data.data
+            this.schoolNum = data.schoolCount
+            this.useNum = data.memberCount
+            this.worksNum = data.modelCount
+            this.courseData = data.courseData
+            this.threeBarData = this.handleThreeBarData(data.courseData)
+            this.modelData1 = data.modelData1
+            this.modelData2 = data.modelData2
+            this.cityChart1 = this.handleCityChart(data.modelData1.cityChart)
+            this.cityChart2 = this.handleCityChart(data.modelData2.cityChart)
+            this.teacCreater = data.tutorList
+            this.schoolRank_num = data.schoolRankList6
+            this.schoolRank_good = data.schoolRankList5
+            this.memberRankList3 = data.memberRankList3
+            this.memberRankList4 = data.memberRankList4
+            this.userChart = this.handleUserChart(data.userChart)
+            this.userChart.xchange = true
+            this.lists = data.lists
+            data.lists.forEach((item, i) => {
+              this.schoolData.push({
                 name: item.name,
                 value: parseInt(item.total),
                 url: item.url
               })
             })
-            that.handelCityMapData(that.schoolData)
-            that.$nextTick(function () {//两个轮播
-              that.teacSwiper = that.swiperFun("#swiper-container_1", 70, 1800)
-              that.schoolSwiper = that.swiperFun("#swiper-container_2", 40, 30000)
+            setTimeout(() => {
+              this.handelCityMapData(this.schoolData)
+            }, 0)
+            this.$nextTick(() => {//两个轮播
+              this.teacSwiper = this.swiperFun("#swiper-container_1", 40, 1500)
+              this.schoolSwiper = this.swiperFun("#swiper-container_2", 40, 800)
             })
           }
+        }).catch((err) => {
+          console.log(err)
         })
-      // })
-    },
-    changeTitle: function () {
-      bus.$emit("add", this.projectTitle)
-    },
-    // 获取城市名
-    getCityName: function (data) {
-      this.$axios.get("/list/api.php?m=DataCloud&a=getCloudMapStatus&code=", { params: { code: data } })
-        .then((res) => {
-          var data = res.data
-          document.title = data.name
-          this.projectTitle = data.name
-        })
-    },
-    getProId: function (params) {
-      if (!params.url) {
-        alert("本区尚未开通数据云图")
-        return false
-      }
-      if (this.routeName == "Province") {
-        var cityCode = params.url.slice(params.url.indexOf("?") + 6)
-        this.$router.push({
-          path: `/region/city/${cityCode}`,
-        })
-      } else if (this.routeName == "City") {
-        console.log(params)
-        var areaCode = params.url.slice(params.url.indexOf("?") + 6)
-        console.log(areaCode)
-        this.$router.push({
-          path: `/region/county`,
-        })
+    }).catch((err) => {
+      console.log(err)
+    })
+  },
+  getCityData: function (cityid) {
+    var that = this
+    // this.$axios.get('../../static/province.json').then(function (data) {
+    // that.$axios.get("/list/api.php?m=DataCloud&a=getCityCloudData&pid=", { params: { pid: cityid } })
+    service({ 
+      url: "/list/api.php?m=DataCloud&a=getCityCloudData&pid=" +cityid
+      // }, { params: { pid: cityid } 
+      })
+      .then(function (data) {
+        if (data.status) {
+          // var data = data.data
+          that.schoolNum = data.schoolCount
+          that.useNum = data.memberCount
+          that.worksNum = data.modelCount
+          that.courseData = data.courseData
+          that.threeBarData = that.handleThreeBarData(data.courseData)
+          that.modelData1 = data.modelData1
+          that.modelData2 = data.modelData2
+          // that.cityChart1 = that.handleCityChart(data.modelData1.cityChart)
+          // that.cityChart2 = that.handleCityChart(data.modelData2.cityChart)
+          that.teacCreater = data.tutorList
+          that.schoolRank_num = data.schoolRankList6
+          that.schoolRank_good = data.schoolRankList5
+          that.memberRankList3 = data.memberRankList3
+          that.memberRankList4 = data.memberRankList4
+          that.userChart = that.handleUserChart(data.userChart)
+          that.userChart.xchange = true
+          that.lists = data.lists
+          data.lists.forEach(function (item, i) {
+            that.schoolData.push({
+              name: item.name,
+              value: parseInt(item.total),
+              url: item.url
+            })
+          })
+          setTimeout(() => {
+            that.handelCityMapData(that.schoolData)
+          }, 0)
+          that.$nextTick(function () {//两个轮播
+            that.teacSwiper = that.swiperFun("#swiper-container_1", 70, 1800)
+            that.schoolSwiper = that.swiperFun("#swiper-container_2", 40, 30000)
+          })
+        }
+      })
+    // })
+  },
+  changeTitle: function () {
+    bus.$emit("add", this.projectTitle)
+  },
+  // 获取城市名
+  getCityName: function (data) {
+    // this.$axios.get("/list/api.php?m=DataCloud&a=getCloudMapStatus&code=", { params: { code: data } })
+    service({
+       url: "/list/api.php?m=DataCloud&a=getCloudMapStatus&code="+ data
+       })
+      .then((data) => {
+        // var data = data.data
+        document.title = data.name
+        this.projectTitle = data.name
+      })
+  },
+  getProId: function (params) {
+    if (!params.url) {
+      alert("本区尚未开通数据云图")
+      return false
+    }
+    if (this.routeName == "Province") {
+      var cityCode = params.url.slice(params.url.indexOf("?") + 6)
+      this.$router.push({
+        path: `/region/city/${cityCode}`,
+      })
+    } else if (this.routeName == "City") {
+      var areaCode = params.url.slice(params.url.indexOf("?") + 6)
+      this.$router.push({
+        path: `/region/county`,
+      })
 
-      }
+    }
 
-    },
-    // 教学成果--数据处理 
-    handleThreeBarData: function (data) {
-      var barData = []
-      var bookData = {
-        id: 1,
-        name: this.barTitle[0],
-        total: data.trainTotal,
-        per: data.trainPercent + '%'
-      }
-      var courseData = {
-        id: 2,
-        name: this.barTitle[1],
-        total: data.newsTotal,
-        per: data.newsPercent + '%'
-      }
-      var newsData = {
-        id: 3,
-        name: this.barTitle[2],
-        total: data.courseTotal,
-        per: data.coursePercent + '%'
-      }
-      barData.push(bookData, courseData, newsData)
-      return barData
-    },
-    // 创新教师--数据处理
-    handleUserChart: function (data) {
-      var userChart = {}
-      userChart.dataAxis = []
-      userChart.value = []
-      userChart.xchange = true
+  },
+  // 教学成果--数据处理 
+  handleThreeBarData: function (data) {
+    var barData = []
+    var bookData = {
+      id: 1,
+      name: this.barTitle[0],
+      total: data.trainTotal,
+      per: data.trainPercent + '%'
+    }
+    var courseData = {
+      id: 2,
+      name: this.barTitle[1],
+      total: data.newsTotal,
+      per: data.newsPercent + '%'
+    }
+    var newsData = {
+      id: 3,
+      name: this.barTitle[2],
+      total: data.courseTotal,
+      per: data.coursePercent + '%'
+    }
+    barData.push(bookData, courseData, newsData)
+    return barData
+  },
+  // 创新教师--数据处理
+  handleUserChart: function (data) {
+    var userChart = {}
+    userChart.dataAxis = []
+    userChart.value = []
+    userChart.xchange = true
 
-      for (let key in data.dataAxis) {
-        userChart.dataAxis.push((data.dataAxis[key]))
-      }
-      for (let key in data.value) {
-        userChart.value.push(data.value[key])
-      }
-      return userChart
-    },
-    // 3D作品--柱状图--数据处理 
-    handleCityChart: function (data) {
-      var cityChart = {}
-      cityChart.dataAxis = []
-      cityChart.value = []
+    for (let key in data.dataAxis) {
+      userChart.dataAxis.push((data.dataAxis[key]))
+    }
+    for (let key in data.value) {
+      userChart.value.push(data.value[key])
+    }
+    return userChart
+  },
+  // 3D作品--柱状图--数据处理 
+  handleCityChart: function (data) {
+    var cityChart = {}
+    cityChart.dataAxis = []
+    cityChart.value = []
 
-      for (let key in data.dataAxis) {
-        cityChart.dataAxis.push((data.dataAxis[key]))
-      }
-      for (let key in data.value) {
-        cityChart.value.push(data.value[key])
-      }
-      return cityChart
-    },
-    // 地图数据处理
-    handelCityMapData: function (data) {
-      var features = echarts.getMap(this.proPY).geoJson.features;
-      var cityList = [],
-        cityMapData = [],
-        valueList = [];
-      var len = features.length
-      for (var i = 0; i < len; i++) {
-        cityList.push(features[i].properties.name)
-      }
-      for (var j = 0; j < data.length; j++) {
-        valueList.push(data[j].value)
-        for (var m = 0; m < cityList.length; m++) {
-          var reg = new RegExp(data[j].name);
-          if (reg.test(cityList[m])) {
-            data[j].name = cityList[m];
-            cityMapData[m] = data[j];
-          }
+    for (let key in data.dataAxis) {
+      cityChart.dataAxis.push((data.dataAxis[key]))
+    }
+    for (let key in data.value) {
+      cityChart.value.push(data.value[key])
+    }
+    return cityChart
+  },
+  // 地图数据处理
+  handelCityMapData: function (data) {
+    var features = echarts.getMap(this.proPY).geoJson.features;
+    var cityList = [],
+      cityMapData = [],
+      valueList = [];
+    var len = features.length
+    for (var i = 0; i < len; i++) {
+      cityList.push(features[i].properties.name)
+    }
+    for (var j = 0; j < data.length; j++) {
+      valueList.push(data[j].value)
+      for (var m = 0; m < cityList.length; m++) {
+        var reg = new RegExp(data[j].name);
+        if (reg.test(cityList[m])) {
+          data[j].name = cityList[m];
+          cityMapData[m] = data[j];
         }
       }
-      // this.dataCityMap.cityList = cityList
-      this.dataCityMap.provinceMapData = cityMapData
-      this.dataCityMap.valueList = valueList
-      this.dataCityMap.code = ""
-    },
-    tabState_0: function () {
-      this.module_2 = 0
-    },
-    tabState_1: function () {
-      this.module_2 = 1
-    },
-    tabState1_0: function () {
-      this.total_mon = 0
-    },
-    tabState1_1: function () {
-      this.total_mon = 1
-    },
-  }
+    }
+    // this.dataCityMap.cityList = cityList
+    this.dataCityMap.provinceMapData = cityMapData
+    this.dataCityMap.valueList = valueList
+    this.dataCityMap.code = ""
+  },
+  tabState_0: function () {
+    this.module_2 = 0
+  },
+  tabState_1: function () {
+    this.module_2 = 1
+  },
+  tabState1_0: function () {
+    this.total_mon = 0
+  },
+  tabState1_1: function () {
+    this.total_mon = 1
+  },
+}
 }
 </script>
 

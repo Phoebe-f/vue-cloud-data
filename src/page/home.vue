@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div class="main-inner clearfix">
+    <div class="main-inner clearfix" v-show="loading == false">
       <div class="left-wrapper fl">
         <div class="main-subox">
           <div class="main-inbox">
@@ -385,6 +385,7 @@
         </div>
       </div>
     </div>
+    <!-- <div class="loading" v-show="loading == true">loading...</div> -->
   </div>
 </template>
 
@@ -398,14 +399,15 @@ import ThreeBar from '../components/threeBar/threeBar'
 import PieBottom from '../components/pieChart/pieChart_1'
 import PieTop from '../components/pieChart/pieChart_2'
 import MapChart from '../components/mapChart/index'
-import pageCon from '../components/page/index.vue'
+import pageCon from '../components/pageChange/index.vue'
 import TabChange from '../components/tabChange/index.vue'
-// import '../utils/china.js'
 
 import commMix from '../utils/commMix.js'
 import bus from '../assets/js/evnetBus.js'
 
 import { mapState } from 'vuex'
+import service from '../utils/request'
+
 
 
 export default {
@@ -421,10 +423,12 @@ export default {
     PieTop,
     MapChart,
     pageCon,
-    TabChange
+    TabChange,
+
   },
   data() {
     return {
+      loading: false,
       totalUse: 0,
       mapName: "china",
       chinaChartData: {},
@@ -503,13 +507,18 @@ export default {
   // 
   methods: {
     getData: function () {
-      var that = this
+      // this.loading = true
       // https://www.i3done.com/api.php?m=DataCloud&a=getCloudData
-      this.$axios.get("/list/api.php?m=DataCloud&a=getCloudData")
+      service({
+        url: "",
+        url: "/list/api.php?m=DataCloud&a=getCloudData"
+      })
+        // this.$axios.get("/list/api.php?m=DataCloud&a=getCloudData")
+        // this.http.get("/api.php?m=DataCloud&a=getCloudData")
         .then((data) => {
-          console.log("home")
           if (data.status) {
-            var data = data.data
+            // this.loading = false
+            // var data = data.data
             this.schoolNum = data.schoolCount
             this.useNum = data.personCount
             this.worksNum = data.modelCount
@@ -527,9 +536,11 @@ export default {
             this.modelData2 = data.modelData2
             this.modelData2.unitChart.state = true
             this.dynamicRank = data.dynamicRank
+            // setTimeout(() => {
             this.province3 = this.handleMapData(data.province3);
             this.province4 = this.handleMapData(data.province4);
             this.province5 = this.handleMapData(data.province5);
+            // }, 0)
             this.province3Page = data.province3
             this.province4Page = data.province4
             this.province5Page = data.province5
@@ -537,6 +548,8 @@ export default {
               this.userSwiper = this.swiperFun('#swiper-container_3', 70, 1800)
             })
           }
+        }).catch((err) => {
+          console.log(err)
         })
     },
     //获取省份拼音
@@ -675,6 +688,12 @@ export default {
 </script>
 
 <style scoped>
+.loading {
+  color: #ffff;
+  font-size: 38px;
+  text-align: center;
+  margin-top: 100px;
+}
 .swiper-container .swiper-wrapper {
   -webkit-transition-timing-function: linear; /*之前是ease-out*/
   -moz-transition-timing-function: linear;

@@ -23,10 +23,14 @@
               <dd></dd>
             </dl>
             <ul class="menu-list" :class="{ active: meunChange == false }">
+              <!-- <li v-text="permission_routes"></li> -->
               <li v-for="menuItem in permission_routes" :key="menuItem.path">
                 <template v-if="menuItem.name != 'region'">
                   <a @click="meunChange = true">
-                    <router-link :to="menuItem.children[0].path" v-text="menuItem.children[0].meta.title"></router-link>
+                    <router-link
+                      :to="menuItem.children[0].path"
+                      v-text="menuItem.children[0].meta.title"
+                    ></router-link>
                   </a>
                 </template>
                 <template v-else>
@@ -74,6 +78,7 @@
 import AppMain from './components/AppMain'
 import bus from '../assets/js/evnetBus.js'
 
+import service from '../utils/request'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -95,7 +100,7 @@ export default {
   computed: {
     ...mapGetters([
       "permission_routes"
-    ])
+    ]),
 
   },
   watch: {
@@ -108,11 +113,13 @@ export default {
     // }
   },
   created: function () {
+    console.log(this.$store.state)
+
     bus.$on('add', (message) => {
       this.title = message
     })
     this.getMenu()
-    this.getBreadcrumb()
+    // this.getBreadcrumb()
     this.getTime();
     setInterval(this.getTime, 1000)
     setTimeout(() => {
@@ -121,9 +128,11 @@ export default {
   },
   methods: {
     getMenu: function () {
-      this.$axios.get('../../static/menu.json').
-        then((data) => {
-          var data = data.data
+      // this.$axios.get('../../static/menu.json').
+      service({
+        url: '../../static/menu.json'
+      }).then((data) => {
+          // var data = data.data
           this.schoolGreat = this.handelSchoolList(data.great)
           this.schoolNomal = this.handelSchoolList(data.nomal)
         })
