@@ -22,15 +22,13 @@ const routes = [
   {
     path: '/example',
     component: reslove => require(['@/layout'], reslove),
-    // component: () => import('@/layout'),
     redirect: '/exampleSchool',
     children: [
       {
         path: '/exampleSchool',
         name: 'exampleSchool',
-        // component: () => import('../page/exampleSchool.vue'),
         component: reslove => require(['../page/exampleSchool'], reslove),
-        meta: { title: '全国示范校' }
+        meta: { title: '全国示范校',roles:['admin'] }
       }
     ]
   },
@@ -39,27 +37,23 @@ const routes = [
     name: "region",
     meta: { title: '各省数据云图' },
     component: reslove => require(['@/layout'], reslove),
-    // component: () => import('@/layout'),
     children: [
       {
         path: 'province/:id',
         name: 'Province',
-        // component: () => import('../page/province.vue'),
         component: reslove => require(['../page/province'], reslove),
         meta: {}
       },
       {
         path: 'city/:code',
         name: 'City',
-        // component: () => import('../page/city.vue'),
         component: reslove => require(['../page/city'], reslove),
         meta: {}
       },
       {
-        path: 'county',
-        name: 'county',
-        // component: () => import('../page/county.vue'),
-        component: reslove => require(['../page/county'], reslove),
+        path: 'area/:code',
+        name: 'area',
+        component: reslove => require(['../page/area'], reslove),
         meta: {}
       },
     ]

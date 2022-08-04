@@ -23,7 +23,7 @@ export default {
       default: "100%"
     },
     chartData: {
-      type: Object,
+      // type: Object,
       required: true
     }
   },
@@ -57,8 +57,18 @@ export default {
       this.chart = echarts.init(document.getElementById(this.id));
       this.setOptions(this.chartData)
     },
-    setOptions: function ({ likes, views, state } = {}) {
+    setOptions: function (data) {
       this.chart.setOption({
+        title: {
+          text: data.pieChartOpt.title.text,
+          textStyle: {
+            color: '#fff',
+            fontSize: 12
+          },
+          left: "center",
+          top: "center"
+        },
+        calculable: true,
         series: [{
           type: 'pie',
           radius: ['40', '50'],
@@ -67,8 +77,10 @@ export default {
             normal: {
               color: function (params) {
                 var colorList = [
-                  ['#383d52', '#383d52'],
-                  ['#0066FF', '#33CCFF']
+                  ['#FF3333', '#FF9900'],
+                  ['#00CC33', '#66FF99'],
+                  ['#6633CC', '#9999FF'],
+                  ['#3399FF', '#66FFFF'],
                 ]
                 var index = params.dataIndex;
                 return new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
@@ -93,18 +105,18 @@ export default {
                   color: '#A0A5B1',
                   padding: [0, 4]
                 }
-              }
+              },
+              alignTo: 'edge',
+              margin: '1',
+              overflow: 'none',
             }
           },
-          data: state == '0' ? [
-            { 'name': '借鉴', 'value': views },
-            { 'name': '原创', 'value': likes }
-          ]
-            :
-            [
-              { 'name': '点赞量', 'value': likes },
-              { 'name': '浏览量', 'value': views }
-            ]
+          labelLine: {
+            lineStyle: {
+              color: '#373A4F'
+            }
+          },
+          data: data.chartData
         }]
       })
     }

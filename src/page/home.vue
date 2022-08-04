@@ -292,10 +292,6 @@
                 @tabState_0="tabState_0"
                 @tabState_1="tabState_1"
               ></tab-change>
-              <!-- <div id="tab2" class="tab">
-                <i :class="{ on: total_mon == 0 }" @click="total_mon = 0">总</i>
-                <i :class="{ on: total_mon == 1 }" @click="total_mon = 1">月</i>
-              </div>-->
             </div>
             <div class="inbox-cont model-line-cont">
               <div class="model-line-chart">
@@ -346,37 +342,26 @@
               </div>
               <div class="normal-user fl">
                 <div class="user-list" v-if="dynamicRank.dynamics">
-                  <div
-                    class="swiper-container"
-                    id="swiper-container_3"
-                    @mouseenter="stopPlay(userSwiper)"
-                    @mouseleave="startPlay(userSwiper)"
-                  >
-                    <div class="swiper-wrapper">
-                      <div
-                        class="swiper-slide"
-                        v-for="(item ,index) in dynamicRank.dynamics"
-                        :key="index"
-                      >
-                        <div class="user-item">
-                          <a class="user-avatar fl">
-                            <img :src="item.avatar" :alt="item.nickname" />
+                  <vue-seamless-scroll :data="dynamicRank.dynamics" :class-option="defaultOption">
+                    <div v-for="(item ,index) in dynamicRank.dynamics" :key="index">
+                      <div class="user-item">
+                        <a class="user-avatar fl">
+                          <img :src="item.avatar" :alt="item.nickname" />
+                        </a>
+                        <div class="user-info fl">
+                          <a>
+                            <span v-text="item.nickname"></span>
                           </a>
-                          <div class="user-info fl">
-                            <a>
-                              <span v-text="item.nickname"></span>
-                            </a>
-                            <a>
-                              <i v-cloak>发布了作品{{ item.title }}</i>
-                            </a>
-                          </div>
-                          <div class="line-time fr">
-                            <i v-text="item.addtime"></i>
-                          </div>
+                          <a>
+                            <i v-cloak>发布了作品{{ item.title }}</i>
+                          </a>
+                        </div>
+                        <div class="line-time fr">
+                          <i v-text="item.addtime"></i>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </vue-seamless-scroll>
                 </div>
                 <div class="user-list" v-else>暂无更多数据</div>
               </div>
@@ -413,12 +398,10 @@ import service from '../utils/request'
 export default {
   mixins: [commMix],
   components: {
-    // AppHeader,
     BarChart,
     LineChart,
     MultihorBar,
     ThreeBar,
-    // MultiLine,
     PieBottom,
     PieTop,
     MapChart,
@@ -492,6 +475,7 @@ export default {
       projectTitle: "3D One 数据云图",
     }
   },
+
   created() {
     this.getData()
     this.mapDataPage(this.province3Page, this.page3Params)
@@ -502,7 +486,19 @@ export default {
   computed: {
     ...mapState({
       queryID: "queryID"
-    })
+    }),
+    defaultOption() {
+      return {
+        step: 0.5, // 数值越大速度滚动越快
+        limitMoveNum: 5, // 开始无缝滚动的数据量 this.dataList.length
+        hoverStop: true, // 是否开启鼠标悬停stop
+        direction: 1, // 0向下 1向上 2向左 3向右
+        openWatch: true, // 开启数据实时监控刷新dom
+        singleHeight: 0, // 单步运动停止的高度(默认值0是无缝不停止的滚动) direction => 0/1
+        singleWidth: 0, // 单步运动停止的宽度(默认值0是无缝不停止的滚动) direction => 2/3
+        waitTime: 1000 // 单步运动停止的时间(默认值1000ms)
+      }
+    }
   },
   // 
   methods: {
@@ -510,7 +506,6 @@ export default {
       // this.loading = true
       // https://www.i3done.com/api.php?m=DataCloud&a=getCloudData
       service({
-        url: "",
         url: "/list/api.php?m=DataCloud&a=getCloudData"
       })
         // this.$axios.get("/list/api.php?m=DataCloud&a=getCloudData")
@@ -544,9 +539,6 @@ export default {
             this.province3Page = data.province3
             this.province4Page = data.province4
             this.province5Page = data.province5
-            this.$nextTick(function () {//轮播
-              this.userSwiper = this.swiperFun('#swiper-container_3', 70, 1800)
-            })
           }
         }).catch((err) => {
           console.log(err)
@@ -619,6 +611,7 @@ export default {
         fiveYears.multiBarData.attaData.push(item.value)
       });
       // this.testmultiBarData = fiveYears.multiBarData
+      fiveYears.multiBarData.topName = fiveYears.multiBarData.topName.reverse()
       return fiveYears
     },
     // 地图数据处理
@@ -665,18 +658,6 @@ export default {
         this.mapDataPage(data, page)
       }
     },
-    // nextPage: function (data, page) {
-    //   if (page.pageNo <= page.total) {
-    //     page.pageNo++
-    //     this.mapDataPage(data, page)
-    //   }
-    // },
-    // prevPage: function (data, page) {
-    //   if (page.pageNo > 1) {
-    //     page.pageNo--
-    //     this.mapDataPage(data, page)
-    //   }
-    // },
     tabState_0: function () {
       this.total_mon = 0
     },
@@ -693,12 +674,5 @@ export default {
   font-size: 38px;
   text-align: center;
   margin-top: 100px;
-}
-.swiper-container .swiper-wrapper {
-  -webkit-transition-timing-function: linear; /*之前是ease-out*/
-  -moz-transition-timing-function: linear;
-  -ms-transition-timing-function: linear;
-  -o-transition-timing-function: linear;
-  transition-timing-function: linear;
 }
 </style>

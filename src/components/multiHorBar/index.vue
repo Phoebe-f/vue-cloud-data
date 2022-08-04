@@ -57,10 +57,11 @@ export default {
       this.chart = echarts.init(document.getElementById(this.id));
       this.setOptions(this.chartData)
     },
-    setOptions: function ({ attaName, topName, attaData } = {}) {
+    // setOptions: function ({ attaName, topName, attaData } = {}) {
+    setOptions: function (data) {
       var salvProMax = []; //背景按最大值
-      for (var i = 0; i < attaData.length; i++) {
-        salvProMax.push(attaData[0]);
+      for (var i = 0; i < data.attaData.length; i++) {
+        salvProMax.push(data.attaData[0]);
       }
       var attackSourcesColor = [
         new echarts.graphic.LinearGradient(0, 1, 1, 1, [
@@ -80,20 +81,7 @@ export default {
           { offset: 1, color: '#2EC7CF' },
         ]),
       ];
-      var attackSourcesColor1 = [
-        '#EB3B5A',
-        '#FA8231',
-        '#F7B731',
-        '#3860FC',
-        '#1089E7',
-        '#F57474',
-        '#56D0E3',
-        '#1089E7',
-        '#F57474',
-        '#1089E7',
-        '#F57474',
-        '#F57474',
-      ];
+      
       // function contains(arr, dst) {
       //   var i = arr.length;
       //   while ((i -= 1)) {
@@ -107,6 +95,7 @@ export default {
 
         var sss = [];
         sData.forEach(function (item, i) {
+          
           let itemStyle = {
             color: i > 3 ? attackSourcesColor[3] : attackSourcesColor[i],
           };
@@ -115,7 +104,6 @@ export default {
             itemStyle: itemStyle,
           });
         });
-        // console.log(sss)
         return sss;
       }
 
@@ -183,7 +171,7 @@ export default {
             },
             pdaaing: [5, 0, 0, 0],
             postion: 'right',
-            // data: attaName,
+            // data: data.attaName,
             axisLabel: {
               show: false,
               margin: 30,
@@ -191,60 +179,14 @@ export default {
               align: 'left',
               padding: [2, 0, 0, 0],
               color: '#000',
-              rich: {
-                nt1: {
-                  color: '#fff',
-                  backgroundColor: attackSourcesColor1[0],
-                  width: 13,
-                  height: 13,
-                  fontSize: 10,
-                  align: 'center',
-                  borderRadius: 100,
-                  lineHeight: '5',
-                  padding: [0, 1, 2, 1],
-                  // padding:[0,0,2,0],
-                },
-                nt2: {
-                  color: '#fff',
-                  backgroundColor: attackSourcesColor1[1],
-                  width: 13,
-                  height: 13,
-                  fontSize: 10,
-                  align: 'center',
-                  borderRadius: 100,
-                  padding: [0, 1, 2, 1],
-                },
-                nt3: {
-                  color: '#fff',
-                  backgroundColor: attackSourcesColor1[2],
-                  width: 13,
-                  height: 13,
-                  fontSize: 10,
-                  align: 'center',
-                  borderRadius: 100,
-                  padding: [0, 1, 2, 1],
-                },
-                nt: {
-                  color: '#fff',
-                  backgroundColor: attackSourcesColor1[4],
-                  width: 13,
-                  height: 13,
-                  fontSize: 10,
-                  align: 'center',
-                  lineHeight: 3,
-                  borderRadius: 100,
-                  padding: [0, 1, 2, 1],
-                  lineHeight: 5,
-                },
-              },
-              formatter: function (value, index) {
-                // index = contains(attaName, value) + 1;
-                // if (index - 1 < 3) {
-                //   return ['{nt' + index + '|' + index + '}'].join('\n');
-                // } else {
-                //   return ['{nt|' + index + '}'].join('\n');
-                // }
-              },
+              // formatter: function (value, index) {
+              //   // index = contains(data.attaName, value) + 1;
+              //   // if (index - 1 < 3) {
+              //   //   return ['{nt' + index + '|' + index + '}'].join('\n');
+              //   // } else {
+              //   //   return ['{nt|' + index + '}'].join('\n');
+              //   // }
+              // },
             },
           },
           {
@@ -256,10 +198,10 @@ export default {
             axisLabel: {
               textStyle: {
                 color: '#a0a5b1',
-                fontSize: '10',
+                fontSize: '12',
               },
             },
-            data: attaData
+            data: data.attaData
           },
           {
             //名称
@@ -279,9 +221,9 @@ export default {
               color: ['#fff'],
               verticalAlign: 'center',
               lineHeight: 50,
-              fontSize: 10,
+              fontSize: 12,
             },
-            data: attackSourcesDataFmt(topName)
+            data: attackSourcesDataFmt(data.topName)
           },
         ],
         series: [
@@ -291,7 +233,7 @@ export default {
             type: 'bar',
             barWidth: '14px',
             animationDuration: 1500,
-            data: attaData,
+            data: attackSourcesDataFmt(data.attaData),
             align: 'center',
             yAxis: "10px",
             itemStyle: {

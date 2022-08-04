@@ -95,6 +95,7 @@ export default {
       routeName: undefined,
       schoolGreat: [],
       schoolNomal: [],
+      userID:1
     }
   },
   computed: {
@@ -113,7 +114,6 @@ export default {
     // }
   },
   created: function () {
-    console.log(this.$store.state)
 
     bus.$on('add', (message) => {
       this.title = message

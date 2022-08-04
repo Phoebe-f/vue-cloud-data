@@ -24,8 +24,14 @@ import '@/styles/index.scss'
 import promise from 'es6-promise'
 promise.polyfill()
 
-// import service from './utils/request'
-// Vue.prototype.service = service
+// import judegUser from "./user/index"
+// if (process.env.NODE_ENV === 'production') {
+  // console.log("O9")
+  import judegUser from './user/index'
+  judegUser()
+// }
+
+
 
 Vue.config.productionTip = false
 Vue.use(ElementUI, { size: 'small', zIndex: 3000 })
@@ -39,15 +45,11 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
-// const host = process.env.NODE_ENV === "development" ? "" : "https://www.i3done.com";
-// const instance = axios.create({
-//     baseURL: host
-// })
-// Vue.prototype.axios = instance;
+
 NProgress.configure({     
   easing: 'ease',  // 动画方式    
   speed: 500,  // 递增进度条的速度    
-  showSpinner: false, // 是否显示加载ico    
+  showSpinner: false, // 是否显示加载icon    
   trickleSpeed: 200, // 自动递增间隔    
   minimum: 0.3 // 初始化时的最小百分比
 })
@@ -58,3 +60,5 @@ router.beforeEach((to, from, next) => {
 router.afterEach(() => {
   NProgress.done();
 });
+
+

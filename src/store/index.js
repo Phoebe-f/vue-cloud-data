@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+
 const routes = require('../router/index').routes
-
-
 
 Vue.use(Vuex)
 
@@ -12,14 +11,14 @@ export function filterAsyncRoutes(routes, roles) {
 
   routes.forEach(route => {
     const tmp = { ...route }
-    // if (hasPermission(roles, tmp)) {
-    if (tmp.children) {
-      tmp.children = filterAsyncRoutes(tmp.children, roles)
+    if (hasPermission(roles, tmp)) {
+      if (tmp.children) {
+        tmp.children = filterAsyncRoutes(tmp.children, roles)
+      }
+      res.push(tmp)
     }
-    res.push(tmp)
-    // }
   })
-
+  console.log(res)
   return res
 }
 
@@ -36,7 +35,7 @@ const store = new Vuex.Store({
 
   mutations: {
     SET_ROUTES: (state, routes) => {
-      state.addRoutes = routes
+      // state.addRoutes = routes
       state.routes = constantRoutes.concat(routes)
     },
     changeQueryID: (state, queryPar) => {
@@ -49,9 +48,9 @@ const store = new Vuex.Store({
       return new Promise(resolve => {
         let accessedRoutes
         if (roles.includes('admin')) {
-          accessedRoutes = asyncRoutes || []
+          accessedRoutes = routes || []
         } else {
-          accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+          accessedRoutes = filterAsyncRoutes(routes, roles)
         }
         commit('SET_ROUTES', accessedRoutes)
         resolve(accessedRoutes)
